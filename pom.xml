@@ -4,18 +4,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.borshchevskiy</groupId>
-    <artifactId>project-control-system</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>project-control-system-parent</artifactId>
     <packaging>pom</packaging>
+    <version>${revision}${changelist}</version>
     <modules>
-        <module>web</module>
-        <module>repository</module>
-        <module>core</module>
-        <module>dto</module>
-        <module>app</module>
+        <module>project-control-system-web</module>
+        <module>project-control-system-repository</module>
+        <module>project-control-system-core</module>
+        <module>project-control-system-dto</module>
+        <module>project-control-system-app</module>
     </modules>
 
     <properties>
+        <revision>0.1</revision>
+        <changelist>-SNAPSHOT</changelist>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.plugin>18</maven.compiler.plugin>
