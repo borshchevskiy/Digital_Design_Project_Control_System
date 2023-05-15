@@ -13,7 +13,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     private static final File STORAGE_PATH;
 
-    // Этот обхект генерирует айдишники для сущностей
+    // Этот объект генерирует айдишники для сущностей
     private final AtomicLong idGenerator;
 
     // Создаем папку-хранилище
@@ -29,8 +29,6 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
                 .max()
                 .orElse(0L);
         idGenerator = new AtomicLong(startValue);
-
-
     }
 
     @Override
@@ -46,6 +44,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
         } catch (IOException e) {
             System.out.println("Error initializing stream");
+            return null;
         }
 
         return employee;
@@ -63,7 +62,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
         } catch (IOException e) {
             System.out.println("Error initializing stream");
-            e.printStackTrace();
+            return null;
         }
 
         return employee;
@@ -83,10 +82,8 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             System.out.println("File not found");
         } catch (IOException e) {
             System.out.println("Error initializing stream");
-            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             System.out.println("Class not found");
-            e.printStackTrace();
         }
 
         return optionalEmployee;
@@ -95,11 +92,11 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     @Override
     public List<Employee> getAll() {
         File[] files = STORAGE_PATH.listFiles();
-        if (files == null) {
-            throw new RuntimeException("Storage is null!");
-        }
-
         List<Employee> employees = new ArrayList<>();
+
+        if (files == null) {
+            return employees;
+        }
 
         for (File file : files) {
             try (FileInputStream fos = new FileInputStream(file);
@@ -113,7 +110,6 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
                 System.out.println("Error initializing stream");
             } catch (ClassNotFoundException e) {
                 System.out.println("Class not found");
-                e.printStackTrace();
             }
         }
 
@@ -127,6 +123,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     @Override
     public void deleteById(Long id) {
         File file = new File(STORAGE_PATH, String.valueOf(id));
+
         if (file.exists()) {
             try {
                 Files.delete(file.toPath());
@@ -138,11 +135,4 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         }
     }
 
-    /*
-    Этот метод меняет статус сотрудника на DELETED
-     */
-    @Override
-    public void delete(Employee employee) {
-        update(employee);
-    }
 }

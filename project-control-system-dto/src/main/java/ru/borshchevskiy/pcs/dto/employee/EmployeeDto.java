@@ -1,17 +1,12 @@
-package ru.borshchevskiy.pcs.dto.employee.request;
+package ru.borshchevskiy.pcs.dto.employee;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
 
+@Data
+public class EmployeeDto {
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class EmployeeCreateDto {
+    private Long id;
 
     private String firstname;
 

@@ -1,4 +1,4 @@
-package ru.borshchevskiy.pcs.dto.task.request;
+package ru.borshchevskiy.pcs.dto.task;
 
 import ru.borshchevskiy.pcs.enums.TaskStatus;
 

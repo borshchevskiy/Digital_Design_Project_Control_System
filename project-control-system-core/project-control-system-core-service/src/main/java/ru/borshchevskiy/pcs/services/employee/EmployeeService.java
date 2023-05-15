@@ -1,20 +1,16 @@
 package ru.borshchevskiy.pcs.services.employee;
 
-import ru.borshchevskiy.pcs.dto.employee.request.EmployeeCreateDto;
-import ru.borshchevskiy.pcs.dto.employee.request.EmployeeUpdateDto;
-import ru.borshchevskiy.pcs.dto.employee.response.EmployeeReadDto;
+import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 
 import java.util.List;
 
 public interface EmployeeService {
 
-    EmployeeReadDto getById(Long id);
+    EmployeeDto getById(Long id);
 
-    List<EmployeeReadDto> getAll();
+    List<EmployeeDto> getAll();
 
-    EmployeeReadDto create(EmployeeCreateDto id);
-
-    EmployeeReadDto update(EmployeeUpdateDto id);
+    EmployeeDto save(EmployeeDto dto);
 
     boolean deleteById(Long id);
 }

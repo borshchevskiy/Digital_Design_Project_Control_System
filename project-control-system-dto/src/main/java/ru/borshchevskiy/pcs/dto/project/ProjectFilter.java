@@ -1,4 +1,4 @@
-package ru.borshchevskiy.pcs.dto.project.request;
+package ru.borshchevskiy.pcs.dto.project;
 
 import ru.borshchevskiy.pcs.enums.ProjectStatus;
 

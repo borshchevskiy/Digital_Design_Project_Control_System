@@ -1,16 +1,13 @@
-package ru.borshchevskiy.pcs.dto.task.response;
+package ru.borshchevskiy.pcs.dto.task;
 
 import lombok.*;
 import ru.borshchevskiy.pcs.enums.TaskStatus;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-public class TaskReadDto {
+
+@Data
+public class TaskDto {
 
     private Long id;
 
@@ -18,7 +15,7 @@ public class TaskReadDto {
 
     private String description;
 
-    private String implementerDisplayName;
+    private Long implementerId;
 
     private String laborCosts;
 
@@ -26,13 +23,11 @@ public class TaskReadDto {
 
     private TaskStatus status;
 
-    private String authorDisplayName;
+    private Long authorId;
 
     private LocalDateTime dateCreated;
 
     private LocalDateTime dateUpdated;
 
-    private String projectCode;
-
-    private String projectName;
+    private Long projectId;
 }

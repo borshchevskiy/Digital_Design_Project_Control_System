@@ -17,5 +17,4 @@ public interface EmployeeRepository {
 
     void deleteById(Long id);
 
-    void delete(Employee entity);
 }

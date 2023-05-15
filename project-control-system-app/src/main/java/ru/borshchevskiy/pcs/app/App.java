@@ -1,8 +1,7 @@
 package ru.borshchevskiy.pcs.app;
 
 import ru.borshchevskiy.pcs.controllers.EmployeeController;
-import ru.borshchevskiy.pcs.dto.employee.request.EmployeeCreateDto;
-import ru.borshchevskiy.pcs.dto.employee.request.EmployeeUpdateDto;
+import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
 
 public class App {
@@ -10,7 +9,7 @@ public class App {
 
         EmployeeController controller = new EmployeeController();
 
-        EmployeeCreateDto ivanDto = new EmployeeCreateDto();
+        EmployeeDto ivanDto = new EmployeeDto();
         ivanDto.setFirstname("Ivan");
         ivanDto.setLastname("Ivanov");
         ivanDto.setPatronymic("Ivanovich");
@@ -18,7 +17,7 @@ public class App {
         ivanDto.setAccount("Ivan-Developer");
         ivanDto.setEmail("ivan@gmail.com");
 
-        EmployeeCreateDto petrDto = new EmployeeCreateDto();
+        EmployeeDto petrDto = new EmployeeDto();
         petrDto.setFirstname("Petr");
         petrDto.setLastname("Petrov");
         petrDto.setPatronymic("Petrovich");
@@ -26,14 +25,15 @@ public class App {
         petrDto.setAccount("Petr-Tester");
         petrDto.setEmail("petr@gmail.com");
 
-        EmployeeUpdateDto petrUpdateDto = new EmployeeUpdateDto(2L,
-                "Petr",
-                "Kuznetsov",
-                "Petrovich",
-                "Tester",
-                "Petr-Tester",
-                "petr@gmail.com",
-                EmployeeStatus.ACTIVE);
+        EmployeeDto petrUpdateDto = new EmployeeDto();
+        petrUpdateDto.setId(2L);
+        petrUpdateDto.setFirstname("Petr");
+        petrUpdateDto.setLastname("Kuznetsov");
+        petrUpdateDto.setPatronymic("Petrovich");
+        petrUpdateDto.setPosition("Tester");
+        petrUpdateDto.setAccount("Petr-Tester");
+        petrUpdateDto.setEmail("petr@gmail.com");
+        petrUpdateDto.setStatus(EmployeeStatus.ACTIVE);
 
         System.out.println("Saving objects");
         System.out.println(controller.create(ivanDto));//Save Ivan
