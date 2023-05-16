@@ -13,6 +13,7 @@
         <module>project-control-system-core</module>
         <module>project-control-system-dto</module>
         <module>project-control-system-app</module>
+        <module>project-control-system-common</module>
     </modules>
 
     <properties>
@@ -21,7 +22,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.plugin>18</maven.compiler.plugin>
+        <maven.compiler.target>18</maven.compiler.target>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.26</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <finalName>project-control-system</finalName>

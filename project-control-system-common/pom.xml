@@ -9,17 +9,6 @@
         <version>${revision}${changelist}</version>
     </parent>
 
-    <artifactId>project-control-system-dto</artifactId>
-    <dependencies>
-        <dependency>
-            <groupId>ru.borshchevskiy</groupId>
-            <artifactId>project-control-system-common</artifactId>
-            <version>${revision}${changelist}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-    </dependencies>
+    <artifactId>project-control-system-common</artifactId>
 
 </project>
