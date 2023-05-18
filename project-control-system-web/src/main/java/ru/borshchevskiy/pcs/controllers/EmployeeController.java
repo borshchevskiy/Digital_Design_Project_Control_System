@@ -3,6 +3,7 @@ package ru.borshchevskiy.pcs.controllers;
 
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 
+import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.services.employee.EmployeeService;
 import ru.borshchevskiy.pcs.services.employee.impl.EmployeeServiceImpl;
 
@@ -26,6 +27,10 @@ public class EmployeeController {
 
     public List<EmployeeDto> getAll() {
         return employeeService.getAll();
+    }
+
+    public List<EmployeeDto> getByFilter(EmployeeFilter filter) {
+        return employeeService.getByFilter(filter);
     }
 
     public boolean deleteById(Long id) {

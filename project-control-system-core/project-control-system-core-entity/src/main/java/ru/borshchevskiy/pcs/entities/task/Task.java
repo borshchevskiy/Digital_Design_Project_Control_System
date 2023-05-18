@@ -2,6 +2,8 @@ package ru.borshchevskiy.pcs.entities.task;
 
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.entities.teammember.TeamMember;
 import ru.borshchevskiy.pcs.enums.TaskStatus;
@@ -11,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Data
-@Builder
 public class Task {
 
     private Long id;
@@ -20,7 +21,7 @@ public class Task {
 
     private String description;
 
-    private TeamMember implementer;
+    private Employee implementer;
 
     private Duration laborCosts;
 
@@ -28,7 +29,7 @@ public class Task {
 
     private TaskStatus status;
 
-    private TeamMember author;
+    private Employee author;
 
     private LocalDateTime dateCreated;
 

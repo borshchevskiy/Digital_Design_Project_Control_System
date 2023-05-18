@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: pcs_dev
+      POSTGRES_PASSWORD: pcs_dev
+      POSTGRES_DB: pcs_dev
+    volumes:
+      - ./imports/db/:/docker-entrypoint-initdb.d/
+
+  app:
+    container_name: app
+    build: ..
+    depends_on:
+      - db
+
