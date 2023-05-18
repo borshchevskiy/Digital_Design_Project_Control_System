@@ -240,7 +240,7 @@ public class TaskJdbcRepositoryImpl implements TaskRepository {
         }
 
         String where = whereSql.stream()
-                .collect(joining(" AND ", " WHERE ", ""));
+                .collect(joining(" AND ", " WHERE ", " ORDER BY tasks.date_created DESC "));
 
         String sql = FIND_ALL_SQL + where;
 

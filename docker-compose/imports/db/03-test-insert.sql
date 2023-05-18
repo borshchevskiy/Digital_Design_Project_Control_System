@@ -26,6 +26,6 @@ INSERT INTO tasks (name, description, implementer_id, labor_costs, deadline, sta
 VALUES ('API development', 'Develop API functionality', 1, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-01', null,
         1),
        ('Repository development', 'Develop repository functionality', 1, 100, '2023-12-31', 'IN_WORK', 3,
-        '2023-05-01', null, 1),
-       ('API testing', 'Test API', 2, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-01', null, 2),
-       ('Security testing', 'Test security', 2, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-01', null, 2);
+        '2023-05-02', null, 1),
+       ('API testing', 'Test API', 2, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-03', null, 2),
+       ('Security testing', 'Test security', 2, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-04', null, 2);

@@ -73,13 +73,14 @@ public class App {
         INSERT INTO tasks (name, description, implementer_id, labor_costs, deadline, status, author_id, date_created,
                    date_updated, project_id)
         VALUES
-        ('API development', 'Develop API functionality', 1, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-01', null,  1),
-       ('Repository development', 'Develop repository functionality', 1, 100, '2023-12-31', 'IN_WORK', 3,'2023-05-01', null, 1),
-       ('API testing', 'Test API', 2, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-01', null, 2),
-       ('Security testing', 'Test security', 2, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-01', null, 2);
+        ('API development', 'Develop API functionality', 1, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-01', null, 1),
+       ('Repository development', 'Develop repository functionality', 1, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-02', null, 1),
+       ('API testing', 'Test API', 2, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-03', null, 2),
+       ('Security testing', 'Test security', 2, 100, '2023-12-31', 'IN_WORK', 3, '2023-05-04', null, 2)
          */
 
         System.out.println("Search all tasks");
+        System.out.println();
         TaskJdbcRepositoryImpl taskJdbcRepository = new TaskJdbcRepositoryImpl();
         for (Task task : taskJdbcRepository.getAll()) {
             System.out.println(task);
@@ -88,6 +89,7 @@ public class App {
 
         System.out.println("Search tasks by filter");
         System.out.println("Search tasks 1 and 3 - name contains 'API'");
+        System.out.println();
         TaskFilter filter1 = new TaskFilter("API", null, null, null, null, null);
         // Должен найти таски 1 и 3
         for (Task task : taskJdbcRepository.findByFilter(filter1)) {
@@ -95,6 +97,7 @@ public class App {
             System.out.println();
         }
         System.out.println("Search task 1 - name contains 'API' and implementer lastname is Petrov (JOIN with employees)");
+        System.out.println();
         // Должен найти таску 3
         TaskFilter filter2 = new TaskFilter("API", null, "Petrov", null, null, null);
         System.out.println(taskJdbcRepository.findByFilter(filter2));

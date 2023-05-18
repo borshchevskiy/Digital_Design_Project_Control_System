@@ -2,7 +2,7 @@
 
 Схема и связи между таблицами показаны на диаграмме
 
-![Database-scheme.png](..%2FDatabase-scheme.png)
+![Database-scheme.png](images%2FDatabase-scheme.png)
 
 Для всех таблиц задан первичный ключ id типа BIGSERIAL.
 

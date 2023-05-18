@@ -8,9 +8,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: pcs_dev
-      POSTGRES_PASSWORD: pcs_dev
-      POSTGRES_DB: pcs_dev
+      - POSTGRES_USER=pcs_dev
+      - POSTGRES_PASSWORD=pcs_dev
+      - POSTGRES_DB=pcs_dev
     volumes:
       - ./imports/db/:/docker-entrypoint-initdb.d/
 
