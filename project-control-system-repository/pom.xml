@@ -17,6 +17,10 @@
             <artifactId>project-control-system-core-entity</artifactId>
             <version>${revision}${changelist}</version>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

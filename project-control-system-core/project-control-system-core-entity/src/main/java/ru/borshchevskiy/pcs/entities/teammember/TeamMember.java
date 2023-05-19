@@ -22,6 +22,4 @@ public class TeamMember implements Serializable {
 
     private TeamMemberProjectRole role;
 
-    private List<Task> tasks;
-
 }

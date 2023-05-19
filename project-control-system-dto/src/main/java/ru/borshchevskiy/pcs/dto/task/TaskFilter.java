@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 
 public record TaskFilter(String name,
                          TaskStatus status,
-                         Long implementerId,
-                         Long authorId,
+                         String implementerLastname,
+                         String authorLastname,
                          LocalDateTime deadline,
                          LocalDateTime dateCreated) {
 }

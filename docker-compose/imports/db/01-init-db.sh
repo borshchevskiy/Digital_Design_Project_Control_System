@@ -1,0 +1,4 @@
+psql --username "$POSTGRES_USER" <<-EOSQL
+	CREATE DATABASE "pcs_dev";
+	GRANT ALL PRIVILEGES ON DATABASE pcs_dev TO pcs_dev;
+EOSQL

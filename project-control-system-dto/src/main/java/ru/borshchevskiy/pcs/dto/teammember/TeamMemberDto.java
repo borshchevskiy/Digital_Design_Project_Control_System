@@ -16,5 +16,4 @@ public class TeamMemberDto {
 
     private TeamMemberProjectRole role;
 
-    private List<Long> tasks;
 }

@@ -1,3 +1,3 @@
 call mvn clean package -DskipTests=true assembly:single
-call docker-compose build
-call docker-compose up
+call docker-compose -f ./docker-compose/docker-compose.yml build
+call docker-compose -f ./docker-compose/docker-compose.yml build

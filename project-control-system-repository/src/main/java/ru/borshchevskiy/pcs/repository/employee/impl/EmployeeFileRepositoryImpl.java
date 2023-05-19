@@ -1,5 +1,6 @@
 package ru.borshchevskiy.pcs.repository.employee.impl;
 
+import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 
@@ -9,7 +10,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class EmployeeRepositoryImpl implements EmployeeRepository {
+public class EmployeeFileRepositoryImpl implements EmployeeRepository {
 
     private static final File STORAGE_PATH;
 
@@ -22,7 +23,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         STORAGE_PATH.mkdirs();
     }
 
-    public EmployeeRepositoryImpl() {
+    public EmployeeFileRepositoryImpl() {
         // Инициализируем генератор айдишников, стартовое значение равно максимальному айдишнику в хранилище, либо 0
         long startValue = Arrays.stream(Objects.requireNonNull(STORAGE_PATH.list()))
                 .mapToLong(Long::valueOf)
@@ -133,6 +134,11 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         } else {
             System.out.println("Employee doesn't exist!");
         }
+    }
+
+    @Override
+    public List<Employee> findByFilter(EmployeeFilter filter) {
+        return null;
     }
 
 }

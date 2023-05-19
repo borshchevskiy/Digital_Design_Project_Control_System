@@ -1,13 +1,14 @@
 package ru.borshchevskiy.pcs.services.employee.impl;
 
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
+import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.exceptions.DeletedItemModificationException;
 import ru.borshchevskiy.pcs.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.mappers.employee.EmployeeMapper;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
-import ru.borshchevskiy.pcs.repository.employee.impl.EmployeeRepositoryImpl;
+import ru.borshchevskiy.pcs.repository.employee.impl.EmployeeJdbcRepositoryImpl;
 import ru.borshchevskiy.pcs.services.employee.EmployeeService;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
 
-    private final EmployeeRepository repository = new EmployeeRepositoryImpl();
+    private final EmployeeRepository repository = new EmployeeJdbcRepositoryImpl();
     private final EmployeeMapper employeeMapper = new EmployeeMapper();
 
 
@@ -32,6 +33,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<EmployeeDto> getAll() {
         return repository.getAll()
+                .stream()
+                .map(employeeMapper::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EmployeeDto> getByFilter(EmployeeFilter filter) {
+        return repository.findByFilter(filter)
                 .stream()
                 .map(employeeMapper::mapToDto)
                 .collect(Collectors.toList());
