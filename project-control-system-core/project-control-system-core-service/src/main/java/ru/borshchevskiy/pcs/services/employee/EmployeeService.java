@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface EmployeeService {
 
-    EmployeeDto getById(Long id);
+    EmployeeDto findById(Long id);
 
-    List<EmployeeDto> getAll();
+    List<EmployeeDto> findAll();
 
-    List<EmployeeDto> getByFilter(EmployeeFilter filter);
+    List<EmployeeDto> findAllByFilter(EmployeeFilter filter);
+
+    EmployeeDto findByAccount(EmployeeFilter filter);
 
     EmployeeDto save(EmployeeDto dto);
 

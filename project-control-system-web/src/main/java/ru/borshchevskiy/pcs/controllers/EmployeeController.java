@@ -1,39 +1,55 @@
 package ru.borshchevskiy.pcs.controllers;
 
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
-
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.services.employee.EmployeeService;
-import ru.borshchevskiy.pcs.services.employee.impl.EmployeeServiceImpl;
 
 import java.util.List;
 
+@RequiredArgsConstructor
+@RestController()
+@RequestMapping("/api/v1/employees")
 public class EmployeeController {
 
-    private final EmployeeService employeeService = new EmployeeServiceImpl();
+    private final EmployeeService employeeService;
 
-    public EmployeeDto create(EmployeeDto request) {
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public EmployeeDto createEmployee(@RequestBody EmployeeDto request) {
         return employeeService.save(request);
     }
 
-    public EmployeeDto update(EmployeeDto request) {
-        return employeeService.save(request);
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public EmployeeDto getEmployee(@PathVariable Long id) {
+        return employeeService.findById(id);
     }
 
-    public EmployeeDto getById(Long id) {
-        return employeeService.getById(id);
+    @GetMapping("/filter")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EmployeeDto> getAllByFilter(@RequestBody EmployeeFilter filter) {
+        return employeeService.findAllByFilter(filter);
     }
 
-    public List<EmployeeDto> getAll() {
-        return employeeService.getAll();
+    @GetMapping("/filter/account")
+    @ResponseStatus(HttpStatus.OK)
+    public EmployeeDto getEmployeeByAccount(@RequestBody EmployeeFilter filter) {
+        return employeeService.findByAccount(filter);
     }
 
-    public List<EmployeeDto> getByFilter(EmployeeFilter filter) {
-        return employeeService.getByFilter(filter);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        boolean success = employeeService.deleteById(id);
+
+        if (!success) {
+            throw new RuntimeException("Can't delete employee");
+        }
+        return new ResponseEntity<>("Employee deleted!", HttpStatus.OK);
     }
 
-    public boolean deleteById(Long id) {
-        return employeeService.deleteById(id);
-    }
 }

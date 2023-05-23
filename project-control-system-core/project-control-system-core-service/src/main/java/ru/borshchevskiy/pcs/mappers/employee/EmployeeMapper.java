@@ -1,10 +1,12 @@
 package ru.borshchevskiy.pcs.mappers.employee;
 
 
+import org.springframework.stereotype.Component;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
 
+@Component
 public class EmployeeMapper {
 
     public EmployeeDto mapToDto(Employee employee) {

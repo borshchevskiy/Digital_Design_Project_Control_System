@@ -1,6 +1,6 @@
 package ru.borshchevskiy.pcs.dto.team;
 
-import lombok.*;
+import lombok.Data;
 
 import java.util.List;
 
@@ -11,5 +11,4 @@ public class TeamDto {
 
     private Long projectId;
 
-    private List<Long> members;
 }

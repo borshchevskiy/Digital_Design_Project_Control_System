@@ -1,6 +1,6 @@
 package ru.borshchevskiy.pcs.dto.employee;
 
-import lombok.*;
+import lombok.Data;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
 
 @Data

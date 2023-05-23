@@ -13,14 +13,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>ru.borshchevskiy</groupId>
-            <artifactId>project-control-system-dto</artifactId>
-            <version>${revision}${changelist}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>ru.borshchevskiy</groupId>
             <artifactId>project-control-system-common</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${revision}${changelist}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

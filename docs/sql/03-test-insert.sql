@@ -16,10 +16,10 @@ VALUES ((SELECT id
          WHERE p.code = 'Project-2'));
 
 INSERT INTO team_members (team_id, employee_id, project_role)
-VALUES (1, 1, 'Developer'),
-       (1, 3, 'Manager'),
-       (2, 2, 'Tester'),
-       (2, 3, 'Manager');
+VALUES (1, 1, 'DEVELOPER'),
+       (1, 3, 'PROJECT_MANAGER'),
+       (2, 2, 'TESTER'),
+       (2, 3, 'PROJECT_MANAGER');
 
 INSERT INTO tasks (name, description, implementer_id, labor_costs, deadline, status, author_id, date_created,
                    date_updated, project_id)

@@ -1,7 +1,10 @@
 package ru.borshchevskiy.pcs.dto.project;
 
 
-import lombok.*;
+import lombok.Data;
+
+import ru.borshchevskiy.pcs.entities.task.Task;
+import ru.borshchevskiy.pcs.entities.team.Team;
 import ru.borshchevskiy.pcs.enums.ProjectStatus;
 
 import java.util.List;
@@ -18,10 +21,5 @@ public class ProjectDto {
     private String description;
 
     private ProjectStatus status;
-
-    private List<Long> teams;
-
-    private List<Long> tasks;
-
 
 }

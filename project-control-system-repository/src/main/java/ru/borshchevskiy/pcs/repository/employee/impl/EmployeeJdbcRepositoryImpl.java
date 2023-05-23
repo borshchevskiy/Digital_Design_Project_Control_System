@@ -1,9 +1,11 @@
 package ru.borshchevskiy.pcs.repository.employee.impl;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
+import ru.borshchevskiy.pcs.repository.employee.EmployeeJdbcRepository;
 import ru.borshchevskiy.pcs.repository.util.jdbc.ConnectionManager;
 
 import java.sql.*;
@@ -13,10 +15,11 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
 
-public class EmployeeJdbcRepositoryImpl implements EmployeeRepository {
+@Qualifier("jdbcRepository")
+@Profile("jdbc")
+public class EmployeeJdbcRepositoryImpl implements EmployeeJdbcRepository {
 
-
-//    Поиск осуществляется по атрибутам Фамилия, Имя, Отчество, учетной записи, адресу электронной почты.
+    //    Поиск осуществляется по атрибутам Фамилия, Имя, Отчество, учетной записи, адресу электронной почты.
     private static final List<String> EMPLOYEE_SEARCH_ATTRIBUTES = List.of("firstname", "lastname", "patronymic", "account", "email");
 
     private static final String FIND_ALL_SQL = """
@@ -110,7 +113,7 @@ public class EmployeeJdbcRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
-    public Optional<Employee> getById(long id) {
+    public Optional<Employee> findById(long id) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
 
@@ -131,7 +134,7 @@ public class EmployeeJdbcRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
-    public List<Employee> getAll() {
+    public List<Employee> findAll() {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
 
@@ -167,11 +170,12 @@ public class EmployeeJdbcRepositoryImpl implements EmployeeRepository {
     Поиск осуществляется по текстовому значению, которое проверяется по атрибутам Фамилия, Имя, Отчество,
     учетной записи, адресу электронной почты и только среди активных сотрудников.
      */
+    @Override
     public List<Employee> findByFilter(EmployeeFilter filter) {
         String searchValue = filter.value();
 
         if (searchValue.isBlank()) {
-            return getAll();
+            return findAll();
         }
 
         String where = "WHERE status = 'ACTIVE' AND " + EMPLOYEE_SEARCH_ATTRIBUTES.stream()
