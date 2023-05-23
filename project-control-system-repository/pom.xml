@@ -13,23 +13,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
             <groupId>ru.borshchevskiy</groupId>
             <artifactId>project-control-system-core-entity</artifactId>
             <version>${revision}${changelist}</version>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
-        <dependency>
             <groupId>ru.borshchevskiy</groupId>
             <artifactId>project-control-system-dto</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${revision}${changelist}</version>
         </dependency>
     </dependencies>
 

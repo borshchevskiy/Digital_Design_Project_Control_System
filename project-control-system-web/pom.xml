@@ -22,12 +22,6 @@
             <artifactId>project-control-system-core-service</artifactId>
             <version>${revision}${changelist}</version>
         </dependency>
-
-        <!--Web-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
     </dependencies>
 
 </project>
