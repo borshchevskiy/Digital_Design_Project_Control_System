@@ -1,15 +1,10 @@
 package ru.borshchevskiy.pcs.entities.team;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 import ru.borshchevskiy.pcs.entities.project.Project;
-import ru.borshchevskiy.pcs.entities.teammember.TeamMember;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @Entity

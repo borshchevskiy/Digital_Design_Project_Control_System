@@ -23,5 +23,4 @@
             <version>${revision}${changelist}</version>
         </dependency>
     </dependencies>
-
 </project>

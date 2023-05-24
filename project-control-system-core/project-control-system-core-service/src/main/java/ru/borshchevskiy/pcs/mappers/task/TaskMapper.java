@@ -2,17 +2,14 @@ package ru.borshchevskiy.pcs.mappers.task;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.borshchevskiy.pcs.dto.project.ProjectDto;
 import ru.borshchevskiy.pcs.dto.task.TaskDto;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.entities.task.Task;
-import ru.borshchevskiy.pcs.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.enums.TaskStatus;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 import ru.borshchevskiy.pcs.repository.project.ProjectRepository;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component

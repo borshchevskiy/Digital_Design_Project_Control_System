@@ -38,6 +38,21 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<TeamMemberDto> findAllByTeamId(Long id) {
+        return repository.findAllByTeamId(id)
+                .stream()
+                .map(teamMemberMapper::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TeamMemberDto> findAllByProjectId(Long id) {
+        return repository.findAllByProjectId(id)
+                .stream()
+                .map(teamMemberMapper::mapToDto)
+                .collect(Collectors.toList());
+    }
 
     @Override
     @Transactional
@@ -70,5 +85,8 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 })
                 .map(teamMemberMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Team member with id=" + id + " not found!"));
+
     }
+
+
 }

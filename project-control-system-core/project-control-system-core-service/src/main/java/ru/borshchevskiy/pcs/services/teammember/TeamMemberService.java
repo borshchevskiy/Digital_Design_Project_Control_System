@@ -1,6 +1,5 @@
 package ru.borshchevskiy.pcs.services.teammember;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.dto.teammember.TeamMemberDto;
 
 import java.util.List;
@@ -13,6 +12,10 @@ public interface TeamMemberService {
 
     TeamMemberDto save(TeamMemberDto dto);
 
-
     TeamMemberDto deleteById(Long id);
+
+    List<TeamMemberDto> findAllByTeamId(Long id);
+
+    List<TeamMemberDto> findAllByProjectId(Long id);
+
 }

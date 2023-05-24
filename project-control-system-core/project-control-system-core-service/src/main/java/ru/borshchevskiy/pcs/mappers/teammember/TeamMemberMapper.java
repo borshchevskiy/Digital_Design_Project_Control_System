@@ -2,10 +2,8 @@ package ru.borshchevskiy.pcs.mappers.teammember;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.borshchevskiy.pcs.dto.team.TeamDto;
 import ru.borshchevskiy.pcs.dto.teammember.TeamMemberDto;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
-import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.entities.team.Team;
 import ru.borshchevskiy.pcs.entities.teammember.TeamMember;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;

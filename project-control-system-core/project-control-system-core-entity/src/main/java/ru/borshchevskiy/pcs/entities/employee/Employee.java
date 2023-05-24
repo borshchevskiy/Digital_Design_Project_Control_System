@@ -1,7 +1,6 @@
 package ru.borshchevskiy.pcs.entities.employee;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;

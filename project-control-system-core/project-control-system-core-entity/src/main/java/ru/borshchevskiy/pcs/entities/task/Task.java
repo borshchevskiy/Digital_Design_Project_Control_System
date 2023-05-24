@@ -1,15 +1,12 @@
 package ru.borshchevskiy.pcs.entities.task;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Type;
+import lombok.Data;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.enums.TaskStatus;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Data

@@ -1,11 +1,11 @@
 package ru.borshchevskiy.pcs.services.project.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.dto.project.ProjectDto;
 import ru.borshchevskiy.pcs.dto.project.ProjectFilter;
+import ru.borshchevskiy.pcs.dto.project.ProjectStatusDto;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.mappers.project.ProjectMapper;
@@ -82,5 +82,19 @@ public class ProjectServiceImpl implements ProjectService {
                 })
                 .map(projectMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Project with id=" + id + " not found!"));
+
+    }
+
+    @Override
+    @Transactional
+    public ProjectDto updateStatus(Long id, ProjectStatusDto request) {
+        return repository.findById(id)
+                .map(project -> {
+                    project.setStatus(request.getStatus());
+                    return project;
+                })
+                .map(repository::save)
+                .map(projectMapper::mapToDto)
+                .orElseThrow(() -> new NotFoundException("Employee with id=" + id + " not found!"));
     }
 }

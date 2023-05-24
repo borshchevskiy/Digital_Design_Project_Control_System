@@ -15,7 +15,6 @@ import ru.borshchevskiy.pcs.repository.employee.EmployeeSpecificationUtil;
 import ru.borshchevskiy.pcs.services.employee.EmployeeService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,8 +53,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional(readOnly = true)
-    public EmployeeDto findByAccount(EmployeeFilter filter) {
-        return repository.findByAccount(filter.value())
+    public EmployeeDto findByAccount(String account) {
+        return repository.findByAccount(account)
                 .map(employeeMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Employee not found!"));
 
@@ -97,12 +96,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return repository.findById(id)
                 .map(employee -> {
-                    if (employee.getStatus() == EmployeeStatus.DELETED) {
-                    throw new DeletedItemModificationException("Employee with id=" + id + " already deleted!");
-                }
-                    employee.setStatus(EmployeeStatus.DELETED);
-                    return employee;
-                })
+                            if (employee.getStatus() == EmployeeStatus.DELETED) {
+                                throw new DeletedItemModificationException("Employee already deleted!");
+                            }
+                            employee.setStatus(EmployeeStatus.DELETED);
+                            return employee;
+                        }
+                )
                 .map(repository::save)
                 .map(employeeMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Employee with id=" + id + " not found!"));
