@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.borshchevskiy.pcs.dto.project.ProjectDto;
+import ru.borshchevskiy.pcs.dto.project.ProjectFilter;
 import ru.borshchevskiy.pcs.services.project.ProjectService;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,5 +22,9 @@ public class ProjectController {
         return projectService.findById(id);
     }
 
-
+    @GetMapping("/filter")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProjectDto> getProject(@RequestBody ProjectFilter filter) {
+        return projectService.findAllByFilter(filter);
+    }
 }

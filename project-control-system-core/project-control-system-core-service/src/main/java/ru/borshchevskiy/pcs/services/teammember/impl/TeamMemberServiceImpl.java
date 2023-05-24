@@ -4,8 +4,6 @@ package ru.borshchevskiy.pcs.services.teammember.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
 import ru.borshchevskiy.pcs.dto.teammember.TeamMemberDto;
 import ru.borshchevskiy.pcs.entities.teammember.TeamMember;
 import ru.borshchevskiy.pcs.exceptions.NotFoundException;
@@ -17,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TeamMemberServiceImpl implements TeamMemberService {
 
@@ -25,6 +22,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     private final TeamMemberMapper teamMemberMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public TeamMemberDto findById(Long id) {
         return repository.findById(id)
                 .map(teamMemberMapper::mapToDto)
@@ -32,6 +30,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TeamMemberDto> findAll() {
         return repository.findAll()
                 .stream()
@@ -63,12 +62,13 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
     @Override
     @Transactional
-    public boolean deleteById(Long id) {
+    public TeamMemberDto deleteById(Long id) {
         return repository.findById(id)
-                .map(project -> {
-                    repository.delete(project);
-                    return true;
+                .map(teamMember -> {
+                    repository.delete(teamMember);
+                    return teamMember;
                 })
-                .orElse(false);
+                .map(teamMemberMapper::mapToDto)
+                .orElseThrow(() -> new NotFoundException("Team member with id=" + id + " not found!"));
     }
 }

@@ -10,13 +10,13 @@ import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.mappers.project.ProjectMapper;
 import ru.borshchevskiy.pcs.repository.project.ProjectRepository;
+import ru.borshchevskiy.pcs.repository.project.ProjectSpecificationUtil;
 import ru.borshchevskiy.pcs.services.project.ProjectService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
 
@@ -24,6 +24,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectMapper projectMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public ProjectDto findById(Long id) {
         return repository.findById(id)
                 .map(projectMapper::mapToDto)
@@ -31,6 +32,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProjectDto> findAll() {
         return repository.findAll()
                 .stream()
@@ -39,8 +41,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProjectDto> findAllByFilter(ProjectFilter filter) {
-        return repository.findAllByFilter(filter)
+        return repository.findAll(ProjectSpecificationUtil.getSpecification(filter))
                 .stream()
                 .map(projectMapper::mapToDto)
                 .collect(Collectors.toList());
@@ -71,11 +74,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public boolean deleteById(Long id) {
-        return repository.findById(id).map(project -> {
+    public ProjectDto deleteById(Long id) {
+        return repository.findById(id)
+                .map(project -> {
                     repository.delete(project);
-                    return true;
+                    return project;
                 })
-                .orElse(false);
+                .map(projectMapper::mapToDto)
+                .orElseThrow(() -> new NotFoundException("Project with id=" + id + " not found!"));
     }
 }

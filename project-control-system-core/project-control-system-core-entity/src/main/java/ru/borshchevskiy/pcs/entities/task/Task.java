@@ -50,7 +50,7 @@ public class Task {
     @Column(name = "date_updated")
     private LocalDateTime dateUpdated;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
     private Project project;
 

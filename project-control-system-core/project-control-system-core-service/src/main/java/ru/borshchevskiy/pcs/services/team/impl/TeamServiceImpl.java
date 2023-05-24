@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService {
 
@@ -22,6 +21,7 @@ public class TeamServiceImpl implements TeamService {
     private final TeamMapper teamMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public TeamDto findById(Long id) {
         return repository.findById(id)
                 .map(teamMapper::mapToDto)
@@ -29,6 +29,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TeamDto> findAll() {
         return repository.findAll()
                 .stream()
@@ -60,12 +61,13 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @Transactional
-    public boolean deleteById(Long id) {
+    public TeamDto deleteById(Long id) {
         return repository.findById(id)
-                .map(project -> {
-                    repository.delete(project);
-                    return true;
+                .map(team -> {
+                    repository.delete(team);
+                    return team;
                 })
-                .orElse(false);
+                .map(teamMapper::mapToDto)
+                .orElseThrow(() -> new NotFoundException("Team with id=" + id + " not found!"));
     }
 }

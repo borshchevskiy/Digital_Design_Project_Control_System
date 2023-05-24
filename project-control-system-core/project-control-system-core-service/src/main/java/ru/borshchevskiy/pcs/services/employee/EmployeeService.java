@@ -17,5 +17,5 @@ public interface EmployeeService {
 
     EmployeeDto save(EmployeeDto dto);
 
-    boolean deleteById(Long id);
+    EmployeeDto deleteById(Long id);
 }

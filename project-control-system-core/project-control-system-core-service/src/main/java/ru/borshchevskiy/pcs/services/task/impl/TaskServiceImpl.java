@@ -11,13 +11,13 @@ import ru.borshchevskiy.pcs.exceptions.DeletedItemModificationException;
 import ru.borshchevskiy.pcs.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.mappers.task.TaskMapper;
 import ru.borshchevskiy.pcs.repository.task.TaskRepository;
+import ru.borshchevskiy.pcs.repository.task.TaskSpecificationUtil;
 import ru.borshchevskiy.pcs.services.task.TaskService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
@@ -25,6 +25,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskMapper taskMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public TaskDto findById(Long id) {
         return repository.findById(id)
                 .map(taskMapper::mapToDto)
@@ -32,6 +33,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskDto> findAll() {
         return repository.findAll()
                 .stream()
@@ -40,8 +42,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskDto> findAllByFilter(TaskFilter filter) {
-        return repository.findAllByFilter(filter)
+        return repository.findAll(TaskSpecificationUtil.getSpecification(filter))
                 .stream()
                 .map(taskMapper::mapToDto)
                 .collect(Collectors.toList());
@@ -70,11 +73,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public boolean deleteById(Long id) {
-        return repository.findById(id).map(project -> {
-                    repository.delete(project);
-                    return true;
+    public TaskDto deleteById(Long id) {
+        return repository.findById(id)
+                .map(task -> {
+                    repository.delete(task);
+                    return task;
                 })
-                .orElse(false);
+                .map(taskMapper::mapToDto)
+                .orElseThrow(() -> new NotFoundException("Task with id=" + id + " not found!"));
     }
 }

@@ -10,9 +10,9 @@ public interface TeamService {
 
     List<TeamDto> findAll();
 
-    @Transactional
+
     TeamDto save(TeamDto dto);
 
-    @Transactional
-    boolean deleteById(Long id);
+
+    TeamDto deleteById(Long id);
 }

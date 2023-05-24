@@ -15,8 +15,7 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
 
-@Qualifier("jdbcRepository")
-@Profile("jdbc")
+
 public class EmployeeJdbcRepositoryImpl implements EmployeeJdbcRepository {
 
     //    Поиск осуществляется по атрибутам Фамилия, Имя, Отчество, учетной записи, адресу электронной почты.

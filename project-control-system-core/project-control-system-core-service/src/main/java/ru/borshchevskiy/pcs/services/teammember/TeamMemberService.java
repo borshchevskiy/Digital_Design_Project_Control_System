@@ -10,9 +10,9 @@ public interface TeamMemberService {
 
     List<TeamMemberDto> findAll();
 
-    @Transactional
+
     TeamMemberDto save(TeamMemberDto dto);
 
-    @Transactional
-    boolean deleteById(Long id);
+
+    TeamMemberDto deleteById(Long id);
 }

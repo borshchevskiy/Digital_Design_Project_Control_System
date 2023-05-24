@@ -17,5 +17,5 @@ public interface ProjectService {
 
     ProjectDto save(ProjectDto dto);
 
-    boolean deleteById(Long id);
+    ProjectDto deleteById(Long id);
 }

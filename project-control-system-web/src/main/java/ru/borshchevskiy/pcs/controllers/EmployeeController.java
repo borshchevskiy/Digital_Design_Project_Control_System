@@ -43,13 +43,9 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        boolean success = employeeService.deleteById(id);
+    public ResponseEntity<EmployeeDto> delete(@PathVariable Long id) {
 
-        if (!success) {
-            throw new RuntimeException("Can't delete employee");
-        }
-        return new ResponseEntity<>("Employee deleted!", HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.deleteById(id), HttpStatus.OK);
     }
 
 }

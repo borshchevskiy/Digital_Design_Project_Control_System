@@ -15,5 +15,5 @@ public interface TaskService {
 
     TaskDto save(TaskDto dto);
 
-    boolean deleteById(Long id);
+    TaskDto deleteById(Long id);
 }

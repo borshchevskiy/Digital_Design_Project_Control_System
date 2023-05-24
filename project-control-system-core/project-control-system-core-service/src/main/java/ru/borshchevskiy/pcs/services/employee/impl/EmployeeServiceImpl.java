@@ -11,6 +11,7 @@ import ru.borshchevskiy.pcs.exceptions.DeletedItemModificationException;
 import ru.borshchevskiy.pcs.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.mappers.employee.EmployeeMapper;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
+import ru.borshchevskiy.pcs.repository.employee.EmployeeSpecificationUtil;
 import ru.borshchevskiy.pcs.services.employee.EmployeeService;
 
 import java.util.List;
@@ -18,16 +19,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
-
 
     private final EmployeeRepository repository;
     private final EmployeeMapper employeeMapper;
 
-
     @Override
+    @Transactional(readOnly = true)
     public EmployeeDto findById(Long id) {
         return repository.findById(id)
                 .map(employeeMapper::mapToDto)
@@ -36,6 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EmployeeDto> findAll() {
         return repository.findAll()
                 .stream()
@@ -44,14 +44,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EmployeeDto> findAllByFilter(EmployeeFilter filter) {
-        return repository.findAllByFilter(filter)
+        return repository.findAll(EmployeeSpecificationUtil.getSpecification(filter))
                 .stream()
                 .map(employeeMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EmployeeDto findByAccount(EmployeeFilter filter) {
         return repository.findByAccount(filter.value())
                 .map(employeeMapper::mapToDto)
@@ -91,22 +93,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     // Если нет, возвращает false
     @Override
     @Transactional
-    public boolean deleteById(Long id) {
-        Optional<Employee> optionalEmployee = repository.findById(id);
+    public EmployeeDto deleteById(Long id) {
 
-        return optionalEmployee.map(employee ->
-                {
+        return repository.findById(id)
+                .map(employee -> {
                     if (employee.getStatus() == EmployeeStatus.DELETED) {
-                    throw new DeletedItemModificationException("Employee already deleted!");
+                    throw new DeletedItemModificationException("Employee with id=" + id + " already deleted!");
                 }
                     employee.setStatus(EmployeeStatus.DELETED);
                     return employee;
                 })
-                .map(employee -> {
-                    repository.save(employee);
-                    return true;
-                })
-                .orElse(false);
+                .map(repository::save)
+                .map(employeeMapper::mapToDto)
+                .orElseThrow(() -> new NotFoundException("Employee with id=" + id + " not found!"));
 
     }
 }
