@@ -3,6 +3,7 @@ package ru.borshchevskiy.pcs.services.employee.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
@@ -70,6 +71,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeDto create(EmployeeDto dto) {
         Employee employee = repository.save(employeeMapper.createEmployee(dto));
+
+        if (ObjectUtils.isEmpty(employee.getAccount())) {
+            employee.setAccount(employee.getFirstname() + employee.getLastname() + employee.getId());
+        }
 
         return employeeMapper.mapToDto(employee);
     }

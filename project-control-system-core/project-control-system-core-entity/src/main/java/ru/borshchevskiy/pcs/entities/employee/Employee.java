@@ -4,8 +4,10 @@ package ru.borshchevskiy.pcs.entities.employee;
 import jakarta.persistence.*;
 import lombok.Data;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
+import ru.borshchevskiy.pcs.enums.Role;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @Entity
@@ -39,5 +41,12 @@ public class Employee implements Serializable {
     @Column(name = "status")
     private EmployeeStatus status;
 
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "roles", joinColumns = @JoinColumn(name = "employee_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
+
+    @Column(name = "password")
+    private String password;
 }
 

@@ -43,7 +43,7 @@ public class ProjectController {
         return ResponseEntity.status(OK).body(projectService.findAll());
     }
 
-    @PostMapping(value="/filter", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/filter", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public List<ProjectDto> getAllByFilter(@RequestBody ProjectFilter filter) {
         return projectService.findAllByFilter(filter);
     }

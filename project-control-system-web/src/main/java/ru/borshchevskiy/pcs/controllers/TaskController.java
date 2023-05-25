@@ -37,7 +37,7 @@ public class TaskController {
         return ResponseEntity.status(OK).body(taskService.findAll());
     }
 
-    @PostMapping(value="/filter", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/filter", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public List<TaskDto> getAllByFilter(@RequestBody TaskFilter filter) {
         return taskService.findAllByFilter(filter);
     }

@@ -3,6 +3,9 @@ package ru.borshchevskiy.pcs.dto.employee;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
+import ru.borshchevskiy.pcs.enums.Role;
+
+import java.util.Set;
 
 @Data
 @Schema(description = "Сотрудник")
@@ -23,4 +26,8 @@ public class EmployeeDto {
     private String email;
     @Schema(description = "Статус")
     private EmployeeStatus status;
+    @Schema(description = "Пароль")
+    private String password;
+    @Schema(description = "Роль")
+    private Set<Role> roles;
 }
