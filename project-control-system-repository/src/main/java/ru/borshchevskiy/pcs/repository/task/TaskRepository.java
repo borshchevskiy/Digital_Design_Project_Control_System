@@ -1,24 +1,11 @@
 package ru.borshchevskiy.pcs.repository.task;
 
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
-import ru.borshchevskiy.pcs.dto.task.TaskFilter;
-import ru.borshchevskiy.pcs.entities.employee.Employee;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 import ru.borshchevskiy.pcs.entities.task.Task;
 
-import java.util.List;
-import java.util.Optional;
+public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {
 
-public interface TaskRepository {
 
-    Task create(Task task);
-
-    Task update(Task task);
-
-    Optional<Task> getById(long id);
-
-    List<Task> getAll();
-
-    void deleteById(Long id);
-
-    List<Task> findByFilter(TaskFilter filter);
 }

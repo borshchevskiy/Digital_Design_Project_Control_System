@@ -2,7 +2,7 @@ package ru.borshchevskiy.pcs.repository.employee.impl;
 
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
-import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
+import ru.borshchevskiy.pcs.repository.employee.EmployeeFileRepository;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -10,7 +10,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class EmployeeFileRepositoryImpl implements EmployeeRepository {
+public class EmployeeFileRepositoryImpl implements EmployeeFileRepository {
 
     private static final File STORAGE_PATH;
 
@@ -70,7 +70,7 @@ public class EmployeeFileRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
-    public Optional<Employee> getById(long id) {
+    public Optional<Employee> findById(long id) {
         File file = new File(STORAGE_PATH, String.valueOf(id));
         Optional<Employee> optionalEmployee = Optional.empty();
 
@@ -91,7 +91,7 @@ public class EmployeeFileRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
-    public List<Employee> getAll() {
+    public List<Employee> findAll() {
         File[] files = STORAGE_PATH.listFiles();
         List<Employee> employees = new ArrayList<>();
 

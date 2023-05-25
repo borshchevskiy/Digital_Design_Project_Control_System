@@ -17,8 +17,9 @@
             <version>${revision}${changelist}</version>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>ru.borshchevskiy</groupId>
+            <artifactId>project-control-system-core-entity</artifactId>
+            <version>${revision}${changelist}</version>
         </dependency>
     </dependencies>
 

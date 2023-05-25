@@ -1,6 +1,6 @@
 package ru.borshchevskiy.pcs.dto.task;
 
-import lombok.*;
+import lombok.Data;
 import ru.borshchevskiy.pcs.enums.TaskStatus;
 
 import java.time.LocalDateTime;

@@ -1,9 +1,7 @@
 package ru.borshchevskiy.pcs.dto.teammember;
 
-import lombok.*;
+import lombok.Data;
 import ru.borshchevskiy.pcs.enums.TeamMemberProjectRole;
-
-import java.util.List;
 
 @Data
 public class TeamMemberDto {

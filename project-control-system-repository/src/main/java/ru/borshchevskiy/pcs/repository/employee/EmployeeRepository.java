@@ -1,23 +1,15 @@
 package ru.borshchevskiy.pcs.repository.employee;
 
-import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface EmployeeRepository {
 
-    Employee create(Employee employee);
+public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
 
-    Employee update(Employee employee);
+    Optional<Employee> findByAccount(String account);
 
-    Optional<Employee> getById(long id);
-
-    List<Employee> getAll();
-
-    void deleteById(Long id);
-
-    List<Employee> findByFilter(EmployeeFilter filter);
 }

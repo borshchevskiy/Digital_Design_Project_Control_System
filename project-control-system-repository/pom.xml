@@ -18,8 +18,9 @@
             <version>${revision}${changelist}</version>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
+            <groupId>ru.borshchevskiy</groupId>
+            <artifactId>project-control-system-dto</artifactId>
+            <version>${revision}${changelist}</version>
         </dependency>
     </dependencies>
 
