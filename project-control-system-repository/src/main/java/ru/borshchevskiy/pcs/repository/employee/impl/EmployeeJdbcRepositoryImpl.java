@@ -1,7 +1,5 @@
 package ru.borshchevskiy.pcs.repository.employee.impl;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Profile;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;

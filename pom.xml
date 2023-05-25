@@ -65,6 +65,13 @@
         <!--            <artifactId>spring-boot-starter-validation</artifactId>-->
         <!--        </dependency>-->
 
+<!--        &lt;!&ndash;Security&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-security</artifactId>-->
+<!--        </dependency>-->
+
+
         <!--Tools-->
         <dependency>
             <groupId>org.projectlombok</groupId>
