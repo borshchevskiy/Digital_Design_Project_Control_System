@@ -55,12 +55,6 @@ public class EmployeeController {
         return ResponseEntity.status(OK).body(employeeService.findAllByFilter(filter));
     }
 
-    @Operation(summary = "Создание сотрудника", description = "Создание нового сотруника")
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto request) {
-
-        return ResponseEntity.status(OK).body(employeeService.save(request));
-    }
 
     @Operation(summary = "Изменение сотрудника", description = "Изменение сотруника по id")
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
