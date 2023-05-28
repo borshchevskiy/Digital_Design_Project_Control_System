@@ -1,11 +1,15 @@
 package ru.borshchevskiy.pcs.repository.employee;
 
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
+import ru.borshchevskiy.pcs.entities.task.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +35,10 @@ public class EmployeeSpecificationUtil {
                 predicates.add(criteriaBuilder.like(root.get("firstname"), searchValue));
                 predicates.add(criteriaBuilder.like(root.get("lastname"), searchValue));
                 predicates.add(criteriaBuilder.like(root.get("patronymic"), searchValue));
-                predicates.add(criteriaBuilder.like(root.get("account"), searchValue));
+
+                Join<Employee, Account> account = root.join("account", JoinType.LEFT);
+                predicates.add(criteriaBuilder.like(account.get("username"), searchValue));
+
                 predicates.add(criteriaBuilder.like(root.get("email"), searchValue));
                 Predicate attributeLikeSearchValue = criteriaBuilder.or(predicates.toArray(Predicate[]::new));
                 return query.where(criteriaBuilder.and(statusEqualsActive, attributeLikeSearchValue)).getRestriction();

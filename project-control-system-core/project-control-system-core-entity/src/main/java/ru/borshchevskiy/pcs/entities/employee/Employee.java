@@ -3,6 +3,7 @@ package ru.borshchevskiy.pcs.entities.employee;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.enums.Role;
 
@@ -31,8 +32,9 @@ public class Employee implements Serializable {
     @Column(name = "position")
     private String position;
 
-    @Column(name = "account")
-    private String account;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(name = "email")
     private String email;
@@ -41,12 +43,5 @@ public class Employee implements Serializable {
     @Column(name = "status")
     private EmployeeStatus status;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "roles", joinColumns = @JoinColumn(name = "employee_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
-
-    @Column(name = "password")
-    private String password;
 }
 

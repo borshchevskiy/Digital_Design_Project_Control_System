@@ -31,64 +31,65 @@ public class ProjectController {
 
     @Operation(summary = "Получение проекта", description = "Получение проекта по id")
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectDto> getProject(@PathVariable Long id) {
+    public ProjectDto getProject(@PathVariable Long id) {
 
-        return ResponseEntity.status(OK).body(projectService.findById(id));
+        return projectService.findById(id);
     }
 
     @Operation(summary = "Получение проектов", description = "Получение всех проектов")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ProjectDto>> getAll() {
+    public List<ProjectDto> getAll() {
 
-        return ResponseEntity.status(OK).body(projectService.findAll());
+        return projectService.findAll();
     }
 
     @PostMapping(value = "/filter", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public List<ProjectDto> getAllByFilter(@RequestBody ProjectFilter filter) {
+
         return projectService.findAllByFilter(filter);
     }
 
     @Operation(summary = "Получение участников проекта", description = "Получение всех участников проекта")
     @GetMapping(value = "/{id}/teammembers", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TeamMemberDto>> getAllMembers(@PathVariable Long id) {
+    public List<TeamMemberDto> getAllMembers(@PathVariable Long id) {
 
-        return ResponseEntity.status(OK).body(teamMemberService.findAllByProjectId(id));
+        return teamMemberService.findAllByProjectId(id);
     }
 
     @Operation(summary = "Получение участников задач", description = "Получение всех задач по проекту")
     @GetMapping(value = "/{id}/tasks", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TaskDto>> getAllTasks(@PathVariable Long id) {
+    public List<TaskDto> getAllTasks(@PathVariable Long id) {
 
-        return ResponseEntity.status(OK).body(taskService.findAllByProjectId(id));
+        return taskService.findAllByProjectId(id);
     }
 
     @Operation(summary = "Создание проекта", description = "Создание нового проекта")
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectDto> createProject(@RequestBody ProjectDto request) {
+    public ProjectDto createProject(@RequestBody ProjectDto request) {
 
-        return ResponseEntity.status(OK).body(projectService.save(request));
+        return projectService.save(request);
     }
 
     @Operation(summary = "Изменение проекта", description = "Изменение проекта по id")
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectDto> updateProject(@RequestBody ProjectDto request) {
+    public ProjectDto updateProject(@RequestBody ProjectDto request) {
 
-        return ResponseEntity.status(OK).body(projectService.save(request));
+        return projectService.save(request);
     }
 
     @Operation(summary = "Удаление проекта", description = "Удаление проекта по id")
     @DeleteMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectDto> deleteProject(@PathVariable Long id) {
+    public ProjectDto deleteProject(@PathVariable Long id) {
 
-        return ResponseEntity.status(OK).body(projectService.deleteById(id));
+        return projectService.deleteById(id);
     }
 
     @Operation(summary = "Изменение статуса", description = "Изменение статуса проекта по id")
     @PostMapping(value = "/{id}/status", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectDto> updateStatus(@PathVariable Long id,
+    public ProjectDto updateStatus(@PathVariable Long id,
                                                    @RequestBody ProjectStatusDto request) {
 
-        return ResponseEntity.status(OK).body(projectService.updateStatus(id, request));
+        return projectService.updateStatus(id, request);
     }
 
 }

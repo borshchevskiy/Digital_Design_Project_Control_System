@@ -4,7 +4,6 @@ package ru.borshchevskiy.pcs.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
@@ -12,9 +11,7 @@ import ru.borshchevskiy.pcs.services.employee.EmployeeService;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @RequiredArgsConstructor
 @RestController()
@@ -26,23 +23,24 @@ public class EmployeeController {
 
     @Operation(summary = "Получение сотрудника", description = "Получение сотруника по id")
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<EmployeeDto> getEmployee(@PathVariable Long id) {
+    public EmployeeDto getEmployee(@PathVariable Long id) {
 
-        return ResponseEntity.status(OK).body(employeeService.findById(id));
+
+        return employeeService.findById(id);
     }
 
     @Operation(summary = "Получение сотрудников", description = "Получение всех сотруников")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<EmployeeDto>> getAll() {
+    public List<EmployeeDto> getAll() {
 
-        return ResponseEntity.status(OK).body(employeeService.findAll());
+        return employeeService.findAll();
     }
 
     @Operation(summary = "Поиск сотрудника по учетной записи", description = "Найти сотруника по точному соответствию учетной записи")
-    @GetMapping(value = "/{account}", consumes = TEXT_PLAIN_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<EmployeeDto> getByAccount(@PathVariable String account) {
+    @GetMapping(value = "/usernames/{username}", produces = APPLICATION_JSON_VALUE)
+    public EmployeeDto getByUsername(@PathVariable String username) {
 
-        return ResponseEntity.status(OK).body(employeeService.findByAccount(account));
+        return employeeService.findByUsername(username);
     }
 
     @Operation(summary = "Поиск сотрудника по фильтру", description = "Найти сотруника по текстовому значению по полям " +
@@ -50,25 +48,32 @@ public class EmployeeController {
                                                                       "адресу электронной почты " +
                                                                       "и только среди активных сотрудников.")
     @PostMapping(value = "/filter", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<EmployeeDto>> getAllByFilter(@RequestBody EmployeeFilter filter) {
+    public List<EmployeeDto> getAllByFilter(@RequestBody EmployeeFilter filter) {
 
-        return ResponseEntity.status(OK).body(employeeService.findAllByFilter(filter));
+        return employeeService.findAllByFilter(filter);
+    }
+
+    @Operation(summary = "Создание сотрудника", description = "Создание нового сотрудника")
+    @PostMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public EmployeeDto createEmployee(@RequestBody EmployeeDto request) {
+
+        return employeeService.save(request);
     }
 
 
     @Operation(summary = "Изменение сотрудника", description = "Изменение сотруника по id")
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<EmployeeDto> updateEmployee(@RequestBody EmployeeDto request) {
+    public EmployeeDto updateEmployee(@RequestBody EmployeeDto request) {
 
-        return ResponseEntity.status(OK).body(employeeService.save(request));
+        return employeeService.save(request);
     }
 
 
     @Operation(summary = "Удаление сотрудника", description = "Изменение по id статуса сотруника на DELETED")
     @DeleteMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<EmployeeDto> deleteEmployee(@PathVariable Long id) {
+    public EmployeeDto deleteEmployee(@PathVariable Long id) {
 
-        return ResponseEntity.status(OK).body(employeeService.deleteById(id));
+        return employeeService.deleteById(id);
 
     }
 }

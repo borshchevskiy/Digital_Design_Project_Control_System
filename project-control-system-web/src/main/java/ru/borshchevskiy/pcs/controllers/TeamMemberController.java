@@ -23,36 +23,36 @@ public class TeamMemberController {
 
     @Operation(summary = "Получение участника", description = "Получение участника по id")
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<TeamMemberDto> getTeamMember(@PathVariable Long id) {
+    public TeamMemberDto getTeamMember(@PathVariable Long id) {
 
-        return ResponseEntity.status(OK).body(teamMemberService.findById(id));
+        return teamMemberService.findById(id);
     }
 
     @Operation(summary = "Получение участников", description = "Получение всех участников")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TeamMemberDto>> getAll() {
+    public List<TeamMemberDto> getAll() {
 
-        return ResponseEntity.status(OK).body(teamMemberService.findAll());
+        return teamMemberService.findAll();
     }
 
     @Operation(summary = "Создание участика", description = "Создание нового участника")
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<TeamMemberDto> createTeamMember(@RequestBody TeamMemberDto request) {
+    public TeamMemberDto createTeamMember(@RequestBody TeamMemberDto request) {
 
-        return ResponseEntity.status(OK).body(teamMemberService.save(request));
+        return teamMemberService.save(request);
     }
 
     @Operation(summary = "Изменение участника", description = "Изменение участника по id")
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<TeamMemberDto> updateTeamMember(@RequestBody TeamMemberDto request) {
+    public TeamMemberDto updateTeamMember(@RequestBody TeamMemberDto request) {
 
-        return ResponseEntity.status(OK).body(teamMemberService.save(request));
+        return teamMemberService.save(request);
     }
 
     @Operation(summary = "Удаление участника", description = "Удаление участника по id")
     @DeleteMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<TeamMemberDto> deleteTeamMember(@PathVariable Long id) {
+    public TeamMemberDto deleteTeamMember(@PathVariable Long id) {
 
-        return ResponseEntity.status(OK).body(teamMemberService.deleteById(id));
+        return teamMemberService.deleteById(id);
     }
 }

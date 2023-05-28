@@ -7,7 +7,9 @@ import ru.borshchevskiy.pcs.dto.project.ProjectDto;
 import ru.borshchevskiy.pcs.dto.project.ProjectFilter;
 import ru.borshchevskiy.pcs.dto.project.ProjectStatusDto;
 import ru.borshchevskiy.pcs.entities.project.Project;
+import ru.borshchevskiy.pcs.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.exceptions.NotFoundException;
+import ru.borshchevskiy.pcs.exceptions.StatusModificationException;
 import ru.borshchevskiy.pcs.mappers.project.ProjectMapper;
 import ru.borshchevskiy.pcs.repository.project.ProjectRepository;
 import ru.borshchevskiy.pcs.repository.project.ProjectSpecificationUtil;
@@ -90,6 +92,25 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDto updateStatus(Long id, ProjectStatusDto request) {
         return repository.findById(id)
                 .map(project -> {
+                    ProjectStatus currentStatus = project.getStatus();
+                    ProjectStatus newStatus = request.getStatus();
+
+                    // Изменение статуса возможно только на следующий по цепочке, нельзя выставить предыдщий статус или
+                    // перескочить через один.
+                    if (newStatus.ordinal() - currentStatus.ordinal() != 1) {
+                        String exceptionMessageEnding;
+                        // Если достигнут финальный статус, то его изменить нельзя.
+                        if (project.getStatus().ordinal() == ProjectStatus.values().length - 1) {
+                            exceptionMessageEnding = " cannot be changed, because it is the final status";
+                        } else {
+                            // Если статус не финальный, указываем на какой можнон его заменить
+                            exceptionMessageEnding = " can only be changed to " +
+                                                     ProjectStatus.values()[project.getStatus().ordinal() + 1];
+                        }
+
+                        throw new StatusModificationException("Current status " + project.getStatus() + exceptionMessageEnding);
+                    }
+
                     project.setStatus(request.getStatus());
                     return project;
                 })

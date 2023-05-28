@@ -21,13 +21,9 @@ public class EmployeeDto {
     @Schema(description = "Должность")
     private String position;
     @Schema(description = "Учетная запись")
-    private String account;
+    private String username;
     @Schema(description = "Email")
     private String email;
     @Schema(description = "Статус")
     private EmployeeStatus status;
-    @Schema(description = "Пароль")
-    private String password;
-    @Schema(description = "Роль")
-    private Set<Role> roles;
 }

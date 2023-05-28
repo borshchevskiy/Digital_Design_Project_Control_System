@@ -1,7 +1,17 @@
-INSERT INTO employees (firstname, lastname, patronymic, position, account, email, status)
-VALUES ('Ivan', 'Ivanov', 'Ivanovich', 'Developer', 'ivan-developer', 'ivan@gmail.com', 'ACTIVE'),
-       ('Petr', 'Petrov', 'Petrovich', 'Tester', 'petr-tester', 'petr@gmail.com', 'ACTIVE'),
-       ('Anton', 'Antonov', 'Antonovich', 'Manager', 'anton-developer', 'anton@gmail.com', 'ACTIVE');
+INSERT INTO employees (firstname, lastname, patronymic, position, email, status)
+VALUES ('Ivan', 'Ivanov', 'Ivanovich', 'Developer', 'ivan@gmail.com', 'ACTIVE'),
+       ('Petr', 'Petrov', 'Petrovich', 'Tester', 'petr@gmail.com', 'ACTIVE'),
+       ('Anton', 'Antonov', 'Antonovich', 'Manager', 'anton@gmail.com', 'ACTIVE');
+
+
+
+-- CREATE UNIQUE INDEX unique_active_username ON employees (account) WHERE (status = 'ACTIVE');
+--
+-- ALTER TABLE employees DROP CONSTRAINT employees_account_key;
+
+INSERT INTO employees (firstname, lastname, patronymic, position, account_id, email, status)
+VALUES ('Vlad', 'Smirnov', 'Petrovich', 'Developer', 1, 'petrovich@gmail.com', 'ACTIVE');
+
 
 INSERT INTO projects (code, name, description, status)
 VALUES ('Project-1', 'First project', 'Very-very good project', 'DEVELOPMENT'),

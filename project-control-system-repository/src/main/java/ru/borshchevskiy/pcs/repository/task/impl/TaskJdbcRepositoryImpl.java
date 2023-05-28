@@ -3,6 +3,7 @@ package ru.borshchevskiy.pcs.repository.task.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.borshchevskiy.pcs.dto.task.TaskFilter;
+import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.entities.task.Task;
@@ -274,7 +275,7 @@ public class TaskJdbcRepositoryImpl implements TaskJdbcRepository {
         implementer.setLastname(resultSet.getString("implementer_lastname"));
         implementer.setPatronymic(resultSet.getString("implementer_patronymic"));
         implementer.setPosition(resultSet.getString("implementer_position"));
-        implementer.setAccount(resultSet.getString("implementer_account"));
+        implementer.setAccount((Account) resultSet.getObject("implementer_account"));
         implementer.setEmail(resultSet.getString("implementer_email"));
         implementer.setStatus(EmployeeStatus.valueOf(resultSet.getString("implementer_status").toUpperCase()));
 

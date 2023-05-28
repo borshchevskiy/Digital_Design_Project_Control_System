@@ -54,8 +54,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional(readOnly = true)
-    public EmployeeDto findByAccount(String account) {
-        return repository.findByAccount(account)
+    public EmployeeDto findByUsername(String username) {
+        return repository.findByUsername(username)
                 .map(employeeMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Employee not found!"));
 
@@ -71,11 +71,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeDto create(EmployeeDto dto) {
         Employee employee = repository.save(employeeMapper.createEmployee(dto));
-
-        if (ObjectUtils.isEmpty(employee.getAccount())) {
-            employee.setAccount(employee.getFirstname() + employee.getLastname() + employee.getId());
-        }
-
         return employeeMapper.mapToDto(employee);
     }
 
@@ -88,7 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new DeletedItemModificationException("Can't modify deleted objects!");
         }
 
-        employeeMapper.mergeEmployee(employee, dto);
+        employee = employeeMapper.mergeEmployee(employee, dto);
 
         return employeeMapper.mapToDto(repository.save(employee));
     }
