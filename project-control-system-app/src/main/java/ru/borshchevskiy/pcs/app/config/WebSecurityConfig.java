@@ -21,13 +21,13 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(
-                                "/api/auth/login",
-                                "/api/auth/register",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**").permitAll()
-                        .anyRequest().authenticated());
+                .authorizeHttpRequests( (requests) ->
+                       requests.requestMatchers("/api/auth/login",
+                                        "/api/auth/register",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**").permitAll()
+                                .anyRequest().authenticated())
+                .httpBasic();
         return http.build();
     }
 

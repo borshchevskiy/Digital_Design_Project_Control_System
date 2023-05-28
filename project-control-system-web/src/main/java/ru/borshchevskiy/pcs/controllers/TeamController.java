@@ -1,6 +1,7 @@
 package ru.borshchevskiy.pcs.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api/v1/teams")
 @Tag(name = "Команды", description = "Управление командами")
+@SecurityRequirement(name = "Swagger auth")
 public class TeamController {
 
     private final TeamService teamService;
