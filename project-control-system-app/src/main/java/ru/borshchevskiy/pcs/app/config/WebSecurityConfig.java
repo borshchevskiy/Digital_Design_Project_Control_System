@@ -2,6 +2,7 @@ package ru.borshchevskiy.pcs.app.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,15 +22,17 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeHttpRequests( (requests) ->
-                       requests.requestMatchers("/api/auth/login",
+                .authorizeHttpRequests((requests) ->
+                        requests.requestMatchers("/api/auth/login",
                                         "/api/auth/register",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic();
+
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
