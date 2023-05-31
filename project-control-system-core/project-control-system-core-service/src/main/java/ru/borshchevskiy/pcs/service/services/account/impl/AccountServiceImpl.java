@@ -6,12 +6,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
+import ru.borshchevskiy.pcs.common.exceptions.UserAlreadyExistsException;
 import ru.borshchevskiy.pcs.dto.account.AccountDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
-import ru.borshchevskiy.pcs.exceptions.NotFoundException;
-import ru.borshchevskiy.pcs.exceptions.UserAlreadyExistsException;
-import ru.borshchevskiy.pcs.service.mappers.account.AccountMapper;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
+import ru.borshchevskiy.pcs.service.mappers.account.AccountMapper;
 import ru.borshchevskiy.pcs.service.services.account.AccountService;
 
 import java.util.Optional;

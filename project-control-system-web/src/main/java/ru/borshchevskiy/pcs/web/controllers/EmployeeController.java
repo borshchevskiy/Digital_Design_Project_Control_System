@@ -56,7 +56,7 @@ public class EmployeeController {
     }
 
     @Operation(summary = "Создание сотрудника", description = "Создание нового сотрудника")
-    @PostMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public EmployeeDto createEmployee(@RequestBody EmployeeDto request) {
 
         return employeeService.save(request);

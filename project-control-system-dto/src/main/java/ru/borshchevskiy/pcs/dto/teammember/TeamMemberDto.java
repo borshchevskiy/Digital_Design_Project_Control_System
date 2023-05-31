@@ -2,7 +2,7 @@ package ru.borshchevskiy.pcs.dto.teammember;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import ru.borshchevskiy.pcs.enums.TeamMemberProjectRole;
+import ru.borshchevskiy.pcs.common.enums.TeamMemberProjectRole;
 
 @Data
 @Schema(description = "Участник команды")

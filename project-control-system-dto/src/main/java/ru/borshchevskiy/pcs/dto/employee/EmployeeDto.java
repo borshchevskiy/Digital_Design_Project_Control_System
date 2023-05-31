@@ -2,10 +2,7 @@ package ru.borshchevskiy.pcs.dto.employee;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import ru.borshchevskiy.pcs.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.enums.Role;
-
-import java.util.Set;
+import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 
 @Data
 @Schema(description = "Сотрудник")

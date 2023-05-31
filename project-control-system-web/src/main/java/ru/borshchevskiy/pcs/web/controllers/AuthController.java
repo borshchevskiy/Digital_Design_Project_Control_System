@@ -31,7 +31,7 @@ public class AuthController {
     @Operation(summary = "Вход", description = "Аутентифицироваться в приложении")
     @PostMapping(value = "/login", consumes = APPLICATION_JSON_VALUE)
     public void login(@RequestBody LoginDto credentials,
-                                        HttpServletRequest request) throws ServletException {
+                      HttpServletRequest request) throws ServletException {
 
         request.login(credentials.username(), credentials.password());
     }

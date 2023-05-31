@@ -3,7 +3,7 @@ package ru.borshchevskiy.pcs.entities.project;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import ru.borshchevskiy.pcs.enums.ProjectStatus;
+import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 
 @Data
 @Entity

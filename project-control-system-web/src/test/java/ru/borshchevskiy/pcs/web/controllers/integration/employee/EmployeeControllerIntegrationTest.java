@@ -4,23 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
+import ru.borshchevskiy.pcs.common.enums.Role;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
-import ru.borshchevskiy.pcs.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.enums.Role;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 import ru.borshchevskiy.pcs.service.mappers.employee.EmployeeMapper;
-import ru.borshchevskiy.pcs.service.services.employee.EmployeeService;
 import ru.borshchevskiy.pcs.web.controllers.integration.IntegrationTestBase;
 
 import java.util.ArrayList;
@@ -29,9 +25,10 @@ import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
+@SpringBootTest
 class EmployeeControllerIntegrationTest extends IntegrationTestBase {
 
     @Autowired
@@ -46,7 +43,6 @@ class EmployeeControllerIntegrationTest extends IntegrationTestBase {
     private ObjectMapper objectMapper;
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
 
 
     @Nested

@@ -1,17 +1,20 @@
 package ru.borshchevskiy.pcs.service.services.integration.employee.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
+import ru.borshchevskiy.pcs.common.exceptions.DeletedItemModificationException;
+import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
-import ru.borshchevskiy.pcs.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.exceptions.DeletedItemModificationException;
-import ru.borshchevskiy.pcs.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 import ru.borshchevskiy.pcs.service.services.employee.EmployeeService;
@@ -22,17 +25,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@SpringBootTest
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+@RequiredArgsConstructor
 class EmployeeServiceImplIntegrationTest extends IntegrationTestBase {
 
-    @Autowired
-    private EmployeeService employeeService;
-    @Autowired
-    private EmployeeRepository employeeRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+
+    private final EmployeeService employeeService;
+    private final EmployeeRepository employeeRepository;
+    private final AccountRepository accountRepository;
+    private final JdbcTemplate jdbcTemplate;
 
 
     @Nested

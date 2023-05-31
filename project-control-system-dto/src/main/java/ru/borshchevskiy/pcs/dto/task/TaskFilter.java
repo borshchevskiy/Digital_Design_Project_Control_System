@@ -1,7 +1,7 @@
 package ru.borshchevskiy.pcs.dto.task;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ru.borshchevskiy.pcs.enums.TaskStatus;
+import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package ru.borshchevskiy.pcs.enums;
+package ru.borshchevskiy.pcs.common.enums;
 
 public enum TeamMemberProjectRole {
     PROJECT_MANAGER,

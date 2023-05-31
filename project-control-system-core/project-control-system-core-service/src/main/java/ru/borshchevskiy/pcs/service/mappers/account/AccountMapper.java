@@ -3,12 +3,9 @@ package ru.borshchevskiy.pcs.service.mappers.account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import ru.borshchevskiy.pcs.common.enums.Role;
 import ru.borshchevskiy.pcs.dto.account.AccountDto;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
-import ru.borshchevskiy.pcs.entities.employee.Employee;
-import ru.borshchevskiy.pcs.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.enums.Role;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
 
 import java.util.Collections;
@@ -53,7 +50,7 @@ public class AccountMapper {
                 .orElse(null);
     }
 
-    private Account copyToAccount (Account copyTo, AccountDto copyFrom) {
+    private Account copyToAccount(Account copyTo, AccountDto copyFrom) {
 
         copyTo.setUsername(copyFrom.getUsername());
         copyTo.setPassword(passwordEncoder.encode(copyFrom.getPassword()));

@@ -87,7 +87,7 @@ public class ProjectController {
     @Operation(summary = "Изменение статуса", description = "Изменение статуса проекта по id")
     @PostMapping(value = "/{id}/status", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ProjectDto updateStatus(@PathVariable Long id,
-                                                   @RequestBody ProjectStatusDto request) {
+                                   @RequestBody ProjectStatusDto request) {
 
         return projectService.updateStatus(id, request);
     }

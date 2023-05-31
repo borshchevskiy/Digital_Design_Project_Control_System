@@ -4,18 +4,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.borshchevskiy.pcs.exceptions.DeletedItemModificationException;
-import ru.borshchevskiy.pcs.exceptions.NotFoundException;
-import ru.borshchevskiy.pcs.exceptions.StatusModificationException;
-import ru.borshchevskiy.pcs.exceptions.UserAlreadyExistsException;
+import ru.borshchevskiy.pcs.common.exceptions.DeletedItemModificationException;
+import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
+import ru.borshchevskiy.pcs.common.exceptions.StatusModificationException;
+import ru.borshchevskiy.pcs.common.exceptions.UserAlreadyExistsException;
 
 import static org.springframework.http.HttpStatus.*;
 
-@RestControllerAdvice(basePackages = "ru.borshchevskiy.pcs.controllers")
+@RestControllerAdvice(basePackages = "ru.borshchevskiy.pcs.web.controllers")
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity<String> handleNotFoundException(NotFoundException exception){
+    public ResponseEntity<String> handleNotFoundException(NotFoundException exception) {
         return ResponseEntity.status(NOT_FOUND).body(exception.getMessage());
     }
 

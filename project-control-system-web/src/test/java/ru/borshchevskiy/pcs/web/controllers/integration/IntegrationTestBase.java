@@ -5,10 +5,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
-import ru.borshchevskiy.pcs.web.controllers.integration.annotation.IntegrationTest;
 
 
-@IntegrationTest
+
 public abstract class IntegrationTestBase {
 
     private static final PostgreSQLContainer<?> postgresContainer =

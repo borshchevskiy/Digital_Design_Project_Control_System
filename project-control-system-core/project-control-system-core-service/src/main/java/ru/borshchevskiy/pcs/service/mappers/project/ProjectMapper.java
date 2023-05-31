@@ -1,9 +1,9 @@
 package ru.borshchevskiy.pcs.service.mappers.project;
 
 import org.springframework.stereotype.Component;
+import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.dto.project.ProjectDto;
 import ru.borshchevskiy.pcs.entities.project.Project;
-import ru.borshchevskiy.pcs.enums.ProjectStatus;
 
 @Component
 public class ProjectMapper {

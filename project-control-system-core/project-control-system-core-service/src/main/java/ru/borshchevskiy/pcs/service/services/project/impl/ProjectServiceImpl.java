@@ -1,23 +1,25 @@
 package ru.borshchevskiy.pcs.service.services.project.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
+import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
+import ru.borshchevskiy.pcs.common.exceptions.StatusModificationException;
 import ru.borshchevskiy.pcs.dto.project.ProjectDto;
 import ru.borshchevskiy.pcs.dto.project.ProjectFilter;
 import ru.borshchevskiy.pcs.dto.project.ProjectStatusDto;
 import ru.borshchevskiy.pcs.entities.project.Project;
-import ru.borshchevskiy.pcs.enums.ProjectStatus;
-import ru.borshchevskiy.pcs.exceptions.NotFoundException;
-import ru.borshchevskiy.pcs.exceptions.StatusModificationException;
-import ru.borshchevskiy.pcs.service.mappers.project.ProjectMapper;
 import ru.borshchevskiy.pcs.repository.project.ProjectRepository;
 import ru.borshchevskiy.pcs.repository.project.ProjectSpecificationUtil;
+import ru.borshchevskiy.pcs.service.mappers.project.ProjectMapper;
 import ru.borshchevskiy.pcs.service.services.project.ProjectService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
@@ -61,15 +63,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     private ProjectDto create(ProjectDto dto) {
         Project project = repository.save(projectMapper.createProject(dto));
-
+        log.info("Project id=" + project.getId() + " created.");
         return projectMapper.mapToDto(project);
     }
 
     private ProjectDto update(ProjectDto dto) {
         Project project = repository.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException("Project with id=" + dto.getId() + " not found!"));
-
         projectMapper.mergeProject(project, dto);
+
+        log.info("Project id=" + project.getId() + " updated.");
 
         return projectMapper.mapToDto(repository.save(project));
     }
@@ -77,13 +80,16 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public ProjectDto deleteById(Long id) {
-        return repository.findById(id)
-                .map(project -> {
-                    repository.delete(project);
-                    return project;
-                })
-                .map(projectMapper::mapToDto)
-                .orElseThrow(() -> new NotFoundException("Project with id=" + id + " not found!"));
+
+        Project project = repository.findById(id)
+                .map(p -> {
+                    repository.delete(p);
+                    return p;
+                }).orElseThrow(() -> new NotFoundException("Project with id=" + id + " not found!"));
+
+        log.info("Project id=" + project.getId() + " deleted.");
+        return projectMapper.mapToDto(project);
+
 
     }
 

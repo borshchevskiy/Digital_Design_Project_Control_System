@@ -1,4 +1,4 @@
-package ru.borshchevskiy.pcs.exceptions;
+package ru.borshchevskiy.pcs.common.exceptions;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {
