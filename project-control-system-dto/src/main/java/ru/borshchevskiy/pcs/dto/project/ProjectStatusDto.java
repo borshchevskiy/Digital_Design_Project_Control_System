@@ -1,0 +1,15 @@
+package ru.borshchevskiy.pcs.dto.project;
+
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import ru.borshchevskiy.pcs.enums.ProjectStatus;
+
+@Data
+@Schema(description = "Статус проекта")
+public class ProjectStatusDto {
+
+    @Schema(description = "Статус проекта")
+    private ProjectStatus status;
+
+}

@@ -1,9 +1,8 @@
 package ru.borshchevskiy.pcs.services.project;
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.dto.project.ProjectDto;
 import ru.borshchevskiy.pcs.dto.project.ProjectFilter;
+import ru.borshchevskiy.pcs.dto.project.ProjectStatusDto;
 
 import java.util.List;
 
@@ -18,4 +17,7 @@ public interface ProjectService {
     ProjectDto save(ProjectDto dto);
 
     ProjectDto deleteById(Long id);
+
+    ProjectDto updateStatus(Long id, ProjectStatusDto request);
+
 }

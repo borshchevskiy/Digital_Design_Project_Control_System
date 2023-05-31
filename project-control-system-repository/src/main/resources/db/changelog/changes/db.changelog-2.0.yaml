@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: account_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: roles
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 3
+      author: iborschevskiy
+      changes:
+        - renameColumn:
+            tableName: employees
+            oldColumnName: account
+            newColumnName: account_id
+        - modifyDataType:
+            tableName: employees
+            columnName: account_id
+            newDataType: bigint
+        - addForeignKeyConstraint:
+            baseTableName: employees
+            baseColumnNames: account_id
+            constraintName: fk_employee_account
+            referencedTableName: accounts
+            referencedColumnNames: id

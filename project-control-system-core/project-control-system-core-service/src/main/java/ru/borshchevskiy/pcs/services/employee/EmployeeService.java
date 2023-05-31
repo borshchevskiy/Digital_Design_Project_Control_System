@@ -13,7 +13,7 @@ public interface EmployeeService {
 
     List<EmployeeDto> findAllByFilter(EmployeeFilter filter);
 
-    EmployeeDto findByAccount(EmployeeFilter filter);
+    EmployeeDto findByUsername(String account);
 
     EmployeeDto save(EmployeeDto dto);
 

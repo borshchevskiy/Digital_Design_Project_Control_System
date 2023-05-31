@@ -1,12 +1,14 @@
 package ru.borshchevskiy.pcs.entities.employee;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
+import ru.borshchevskiy.pcs.enums.Role;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @Entity
@@ -30,8 +32,9 @@ public class Employee implements Serializable {
     @Column(name = "position")
     private String position;
 
-    @Column(name = "account")
-    private String account;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(name = "email")
     private String email;

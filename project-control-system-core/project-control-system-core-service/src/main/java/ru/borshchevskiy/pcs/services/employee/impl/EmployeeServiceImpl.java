@@ -3,6 +3,7 @@ package ru.borshchevskiy.pcs.services.employee.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
@@ -15,7 +16,6 @@ import ru.borshchevskiy.pcs.repository.employee.EmployeeSpecificationUtil;
 import ru.borshchevskiy.pcs.services.employee.EmployeeService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,8 +54,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional(readOnly = true)
-    public EmployeeDto findByAccount(EmployeeFilter filter) {
-        return repository.findByAccount(filter.value())
+    public EmployeeDto findByUsername(String username) {
+        return repository.findByUsername(username)
                 .map(employeeMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Employee not found!"));
 
@@ -71,7 +71,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeDto create(EmployeeDto dto) {
         Employee employee = repository.save(employeeMapper.createEmployee(dto));
-
         return employeeMapper.mapToDto(employee);
     }
 
@@ -84,7 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new DeletedItemModificationException("Can't modify deleted objects!");
         }
 
-        employeeMapper.mergeEmployee(employee, dto);
+        employee = employeeMapper.mergeEmployee(employee, dto);
 
         return employeeMapper.mapToDto(repository.save(employee));
     }
@@ -97,12 +96,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return repository.findById(id)
                 .map(employee -> {
-                    if (employee.getStatus() == EmployeeStatus.DELETED) {
-                    throw new DeletedItemModificationException("Employee with id=" + id + " already deleted!");
-                }
-                    employee.setStatus(EmployeeStatus.DELETED);
-                    return employee;
-                })
+                            if (employee.getStatus() == EmployeeStatus.DELETED) {
+                                throw new DeletedItemModificationException("Employee already deleted!");
+                            }
+                            employee.setStatus(EmployeeStatus.DELETED);
+                            return employee;
+                        }
+                )
                 .map(repository::save)
                 .map(employeeMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Employee with id=" + id + " not found!"));

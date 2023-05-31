@@ -1,11 +1,7 @@
 package ru.borshchevskiy.pcs.entities.teammember;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.team.Team;
 import ru.borshchevskiy.pcs.enums.TeamMemberProjectRole;

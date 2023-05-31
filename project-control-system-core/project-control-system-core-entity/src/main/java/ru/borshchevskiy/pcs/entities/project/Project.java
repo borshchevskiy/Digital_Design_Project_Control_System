@@ -1,18 +1,9 @@
 package ru.borshchevskiy.pcs.entities.project;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.springframework.stereotype.Service;
-import ru.borshchevskiy.pcs.entities.task.Task;
-import ru.borshchevskiy.pcs.entities.team.Team;
+import lombok.Data;
 import ru.borshchevskiy.pcs.enums.ProjectStatus;
-
-import java.util.List;
 
 @Data
 @Entity

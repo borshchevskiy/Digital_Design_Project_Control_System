@@ -69,5 +69,6 @@ public class TeamServiceImpl implements TeamService {
                 })
                 .map(teamMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Team with id=" + id + " not found!"));
+
     }
 }

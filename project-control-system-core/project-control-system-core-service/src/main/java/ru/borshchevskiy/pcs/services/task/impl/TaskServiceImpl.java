@@ -5,9 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.dto.task.TaskDto;
 import ru.borshchevskiy.pcs.dto.task.TaskFilter;
+import ru.borshchevskiy.pcs.dto.task.TaskStatusDto;
 import ru.borshchevskiy.pcs.entities.task.Task;
-import ru.borshchevskiy.pcs.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.exceptions.DeletedItemModificationException;
 import ru.borshchevskiy.pcs.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.mappers.task.TaskMapper;
 import ru.borshchevskiy.pcs.repository.task.TaskRepository;
@@ -51,6 +50,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<TaskDto> findAllByProjectId(Long id) {
+        return repository.findAllByProjectId(id)
+                .stream()
+                .map(taskMapper::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public TaskDto save(TaskDto dto) {
         return dto.getId() == null
@@ -82,4 +89,19 @@ public class TaskServiceImpl implements TaskService {
                 .map(taskMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Task with id=" + id + " not found!"));
     }
+
+    @Override
+    @Transactional
+    public TaskDto updateStatus(Long id, TaskStatusDto request) {
+        return repository.findById(id)
+                .map(task -> {
+                    task.setStatus(request.getStatus());
+                    return task;
+                })
+                .map(repository::save)
+                .map(taskMapper::mapToDto)
+                .orElseThrow(() -> new NotFoundException("Employee with id=" + id + " not found!"));
+    }
+
+
 }

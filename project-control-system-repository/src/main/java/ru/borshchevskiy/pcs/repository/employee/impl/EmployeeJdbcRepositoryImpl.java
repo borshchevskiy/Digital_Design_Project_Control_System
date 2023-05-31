@@ -1,8 +1,7 @@
 package ru.borshchevskiy.pcs.repository.employee.impl;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Profile;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeJdbcRepository;
@@ -69,7 +68,7 @@ public class EmployeeJdbcRepositoryImpl implements EmployeeJdbcRepository {
             preparedStatement.setString(2, employee.getLastname());
             preparedStatement.setString(3, employee.getPatronymic());
             preparedStatement.setString(4, employee.getPosition());
-            preparedStatement.setString(5, employee.getAccount());
+            preparedStatement.setString(5, String.valueOf( employee.getAccount().getId()));
             preparedStatement.setString(6, employee.getEmail());
             preparedStatement.setString(7, employee.getStatus().name());
 
@@ -97,7 +96,7 @@ public class EmployeeJdbcRepositoryImpl implements EmployeeJdbcRepository {
             preparedStatement.setString(2, employee.getLastname());
             preparedStatement.setString(3, employee.getPatronymic());
             preparedStatement.setString(4, employee.getPosition());
-            preparedStatement.setString(5, employee.getAccount());
+            preparedStatement.setString(5, String.valueOf(employee.getAccount()));
             preparedStatement.setString(6, employee.getEmail());
             preparedStatement.setString(7, employee.getStatus().name());
             preparedStatement.setLong(8, employee.getId());
@@ -207,7 +206,7 @@ public class EmployeeJdbcRepositoryImpl implements EmployeeJdbcRepository {
         employee.setLastname(resultSet.getString("lastname"));
         employee.setPatronymic(resultSet.getString("patronymic"));
         employee.setPosition(resultSet.getString("position"));
-        employee.setAccount(resultSet.getString("account"));
+        employee.setAccount(((Account) resultSet.getObject("account")));
         employee.setEmail(resultSet.getString("email"));
         employee.setStatus(EmployeeStatus.valueOf(resultSet.getString("status").toUpperCase()));
 

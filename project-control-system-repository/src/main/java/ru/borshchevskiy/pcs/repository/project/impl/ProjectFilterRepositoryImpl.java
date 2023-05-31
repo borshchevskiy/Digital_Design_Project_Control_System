@@ -13,7 +13,6 @@ import ru.borshchevskiy.pcs.repository.project.ProjectFilterRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class ProjectFilterRepositoryImpl implements ProjectFilterRepository {

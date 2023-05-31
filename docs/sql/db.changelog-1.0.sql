@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS tasks
     name           VARCHAR(255) NOT NULL,
     description    TEXT,
     implementer_id BIGINT,
-    labor_costs    INT       NOT NULL,
+    labor_costs    INT          NOT NULL,
     deadline       TIMESTAMP    NOT NULL,
     status         VARCHAR(255) NOT NULL,
     author_id      BIGINT       NOT NULL,
