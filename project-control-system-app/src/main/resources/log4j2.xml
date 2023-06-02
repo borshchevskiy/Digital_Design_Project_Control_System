@@ -72,6 +72,27 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
+        <RollingFile name="EmailFileAppender" fileName="logs/business/email/email-notification.log"
+                     filePattern="logs/business/email/email-notification-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="EmailErrorFileAppender" fileName="logs/business/email/email-errors.log"
+                     filePattern="logs/business/email/email-errors-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
     </Appenders>
     <Loggers>
         <Logger name="ru.borshchevskiy.pcs.service.services.employee" level="debug" additivity="false">
@@ -85,6 +106,10 @@
         <Logger name="ru.borshchevskiy.pcs.service.services.task" level="debug" additivity="false">
             <AppenderRef ref="TaskFileAppender"/>
             <AppenderRef ref="TaskWarnFileAppender"/>
+        </Logger>
+        <Logger name="ru.borshchevskiy.pcs.service.services.email" level="debug" additivity="false">
+            <AppenderRef ref="EmailFileAppender"/>
+            <AppenderRef ref="EmailErrorFileAppender"/>
         </Logger>
         <Root level="info">
             <AppenderRef ref="ConsoleAppender"/>

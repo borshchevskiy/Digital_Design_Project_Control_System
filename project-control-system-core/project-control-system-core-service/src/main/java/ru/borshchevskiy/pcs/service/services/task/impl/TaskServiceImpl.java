@@ -2,6 +2,7 @@ package ru.borshchevskiy.pcs.service.services.task.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
@@ -12,6 +13,7 @@ import ru.borshchevskiy.pcs.entities.task.Task;
 import ru.borshchevskiy.pcs.repository.task.TaskRepository;
 import ru.borshchevskiy.pcs.repository.task.TaskSpecificationUtil;
 import ru.borshchevskiy.pcs.service.mappers.task.TaskMapper;
+import ru.borshchevskiy.pcs.service.services.email.EmailService;
 import ru.borshchevskiy.pcs.service.services.task.TaskService;
 
 import java.util.List;
@@ -24,6 +26,8 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository repository;
     private final TaskMapper taskMapper;
+    private final EmailService emailService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional(readOnly = true)
@@ -69,7 +73,11 @@ public class TaskServiceImpl implements TaskService {
 
     private TaskDto create(TaskDto dto) {
         Task task = repository.save(taskMapper.createTask(dto));
+
         log.info("Task id=" + task.getId() + " created.");
+
+        eventPublisher.publishEvent(task);
+
         return taskMapper.mapToDto(task);
     }
 

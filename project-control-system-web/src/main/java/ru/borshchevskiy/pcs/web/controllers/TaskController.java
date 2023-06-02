@@ -46,7 +46,7 @@ public class TaskController {
     @Operation(summary = "Создание задачи", description = "Создание новой задачи")
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public TaskDto createTask(@RequestBody TaskDto request) {
-
+        System.out.println(request);
         return taskService.save(request);
     }
 
