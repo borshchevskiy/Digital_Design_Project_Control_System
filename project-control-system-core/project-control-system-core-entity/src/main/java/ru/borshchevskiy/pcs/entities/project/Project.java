@@ -5,10 +5,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Data
 @Entity
 @Table(name = "projects")
-public class Project {
+public class Project implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

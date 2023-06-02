@@ -7,12 +7,13 @@ import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "tasks")
-public class Task {
+public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

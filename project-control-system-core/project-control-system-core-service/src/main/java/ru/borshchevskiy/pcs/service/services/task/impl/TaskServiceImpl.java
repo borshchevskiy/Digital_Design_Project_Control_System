@@ -2,6 +2,7 @@ package ru.borshchevskiy.pcs.service.services.task.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +27,8 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository repository;
     private final TaskMapper taskMapper;
-    private final EmailService emailService;
     private final ApplicationEventPublisher eventPublisher;
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -76,7 +77,9 @@ public class TaskServiceImpl implements TaskService {
 
         log.info("Task id=" + task.getId() + " created.");
 
-        eventPublisher.publishEvent(task);
+//        TODO: После согласования оставить одну публикацию
+//        eventPublisher.publishEvent(task);
+        rabbitTemplate.convertAndSend("app.task","app.task.new", task);
 
         return taskMapper.mapToDto(task);
     }
