@@ -6,5 +6,5 @@ import ru.borshchevskiy.pcs.entities.task.Task;
 public interface NewTaskListener {
 
     @EventListener
-    void processNewTask(Task task);
+    void receiveNewTask(Task task);
 }

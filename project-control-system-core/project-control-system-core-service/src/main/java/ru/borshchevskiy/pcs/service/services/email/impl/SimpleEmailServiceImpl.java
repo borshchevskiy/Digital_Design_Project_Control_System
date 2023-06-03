@@ -28,7 +28,7 @@ public class SimpleEmailServiceImpl extends AbstractEmailService implements NewT
 
     @Override
     @Async
-    public void processNewTask(Task task) {
+    public void receiveNewTask(Task task) {
         String toAddress = task.getImplementer().getEmail();
 
         if (!StringUtils.hasText(toAddress)) {

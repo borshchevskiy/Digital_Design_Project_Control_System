@@ -26,7 +26,7 @@ public class AmqpEmailServiceImpl extends AbstractEmailService implements NewTas
     }
 
     @Override
-    public void processNewTask(Task task) {
+    public void receiveNewTask(Task task) {
         String toAddress = task.getImplementer().getEmail();
 
         if (!StringUtils.hasText(toAddress)) {
