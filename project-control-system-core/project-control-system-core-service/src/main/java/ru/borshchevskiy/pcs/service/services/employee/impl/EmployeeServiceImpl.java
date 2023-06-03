@@ -1,7 +1,7 @@
 package ru.borshchevskiy.pcs.service.services.employee.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
@@ -18,7 +18,7 @@ import ru.borshchevskiy.pcs.service.services.employee.EmployeeService;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
@@ -74,7 +74,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeDto create(EmployeeDto dto) {
         Employee employee = repository.save(employeeMapper.createEmployee(dto));
 
-        log.info("Employee id=" + employee.getId() + " created.");
+        log.debug("Employee id=" + employee.getId() + " created.");
 
         return employeeMapper.mapToDto(employee);
     }
@@ -85,13 +85,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new NotFoundException("Employee not found!"));
 
         if (employee.getStatus() == EmployeeStatus.DELETED) {
-            log.warn("Attempt to modify deleted Employee with id=" + employee.getId());
+            log.error("Attempt to modify deleted Employee with id=" + employee.getId());
             throw new DeletedItemModificationException("Can't modify deleted objects!");
         }
 
         employee = employeeMapper.mergeEmployee(employee, dto);
 
-        log.info("Employee id=" + employee.getId() + " modified.");
+        log.debug("Employee id=" + employee.getId() + " modified.");
 
         return employeeMapper.mapToDto(repository.save(employee));
     }

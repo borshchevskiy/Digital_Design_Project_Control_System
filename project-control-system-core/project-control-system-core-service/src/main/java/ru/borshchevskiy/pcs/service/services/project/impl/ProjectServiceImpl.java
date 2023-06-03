@@ -1,7 +1,7 @@
 package ru.borshchevskiy.pcs.service.services.project.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
@@ -19,7 +19,7 @@ import ru.borshchevskiy.pcs.service.services.project.ProjectService;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
@@ -63,7 +63,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private ProjectDto create(ProjectDto dto) {
         Project project = repository.save(projectMapper.createProject(dto));
-        log.info("Project id=" + project.getId() + " created.");
+        log.debug("Project id=" + project.getId() + " created.");
         return projectMapper.mapToDto(project);
     }
 
@@ -72,7 +72,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new NotFoundException("Project with id=" + dto.getId() + " not found!"));
         projectMapper.mergeProject(project, dto);
 
-        log.info("Project id=" + project.getId() + " updated.");
+        log.debug("Project id=" + project.getId() + " updated.");
 
         return projectMapper.mapToDto(repository.save(project));
     }
@@ -87,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
                     return p;
                 }).orElseThrow(() -> new NotFoundException("Project with id=" + id + " not found!"));
 
-        log.info("Project id=" + project.getId() + " deleted.");
+        log.debug("Project id=" + project.getId() + " deleted.");
         return projectMapper.mapToDto(project);
 
 
@@ -101,15 +101,15 @@ public class ProjectServiceImpl implements ProjectService {
                     ProjectStatus currentStatus = project.getStatus();
                     ProjectStatus newStatus = request.getStatus();
 
-                    // Изменение статуса возможно только на следующий по цепочке, нельзя выставить предыдщий статус или
-                    // перескочить через один.
+                    // Изменение статуса возможно только на следующий статус по цепочке,
+                    // нельзя выставить предыдущий статус или перескочить через один.
                     if (newStatus.ordinal() - currentStatus.ordinal() != 1) {
                         String exceptionMessageEnding;
                         // Если достигнут финальный статус, то его изменить нельзя.
                         if (project.getStatus().ordinal() == ProjectStatus.values().length - 1) {
                             exceptionMessageEnding = " cannot be changed, because it is the final status";
                         } else {
-                            // Если статус не финальный, указываем на какой можнон его заменить
+                            // Если статус не финальный, указываем на какой можно его заменить
                             exceptionMessageEnding = " can only be changed to " +
                                                      ProjectStatus.values()[project.getStatus().ordinal() + 1];
                         }

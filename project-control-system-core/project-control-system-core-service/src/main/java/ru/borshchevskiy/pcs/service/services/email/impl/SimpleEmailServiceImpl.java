@@ -1,46 +1,34 @@
 package ru.borshchevskiy.pcs.service.services.email.impl;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.event.EventListener;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 import ru.borshchevskiy.pcs.entities.task.Task;
-import ru.borshchevskiy.pcs.service.services.email.EmailService;
+import ru.borshchevskiy.pcs.service.listeners.NewTaskListener;
+import ru.borshchevskiy.pcs.service.services.email.templates.TemplateProcessor;
 
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
-@Log4j2
+@Slf4j
 @Service
-@RequiredArgsConstructor
-public class SimpleEmailServiceImpl implements EmailService {
+public class SimpleEmailServiceImpl extends AbstractEmailService implements NewTaskListener {
 
-
-    @Value("${spring.mail.templates.path}")
-    private String templateLocation;
     // TODO:  Адрес тестового получателя писем.  После согласования убрать
     @Value("${spring.mail.test.recipient}")
     private String testRecipient;
+    private final TemplateProcessor templateProcessor;
 
-    private final JavaMailSender emailSender;
-    private final SpringTemplateEngine templateEngine;
+    @Autowired
+    public SimpleEmailServiceImpl(JavaMailSender emailSender, TemplateProcessor templateProcessor) {
+        super(emailSender);
+        this.templateProcessor = templateProcessor;
+    }
 
     @Override
     @Async
-    @EventListener
-    public void sendTemplateTaskNotification(Task task) {
-
+    public void processNewTask(Task task) {
         String toAddress = task.getImplementer().getEmail();
 
         if (!StringUtils.hasText(toAddress)) {
@@ -50,41 +38,9 @@ public class SimpleEmailServiceImpl implements EmailService {
             return;
         }
 
-        Context context = new Context();
-        Map<String, Object> templateContext = new HashMap<>();
-        templateContext.put("firstname", task.getImplementer().getFirstname());
-        templateContext.put("lastname", task.getImplementer().getLastname());
-        templateContext.put("projectName", task.getProject().getName());
-        templateContext.put("taskName", task.getName());
-        templateContext.put("taskDescription", task.getDescription());
-        templateContext.put("deadline", task.getDeadline().toLocalDate());
-        templateContext.put("laborCosts", task.getLaborCosts());
-        templateContext.put("authorName", task.getAuthor().getFirstname() + " " + task.getAuthor().getLastname());
-        templateContext.put("taskId", task.getId());
 
-        context.setVariables(templateContext);
-        String emailContent = templateEngine.process(templateLocation, context);
+        String emailContent = templateProcessor.prepareNewTaskTemplate(task);
 
-        try {
-            MimeMessage message = emailSender.createMimeMessage();
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,
-                    MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-                    StandardCharsets.UTF_8.name());
-
-            // TODO: Заменить отправку на тестовый адрес на отправку на реальный адрес
-            //  mimeMessageHelper.setTo(toAddress);
-            mimeMessageHelper.setTo(testRecipient);
-            mimeMessageHelper.setSubject("New task assigned");
-            mimeMessageHelper.setText(emailContent, true);
-
-            emailSender.send(message);
-
-            log.info("Email notification on new task sent to " + toAddress);
-
-        } catch (MailException | MessagingException exception) {
-            log.error("Failed to send email to " + toAddress + ". " +
-                      "Reason: " + exception.getCause() + ". Message: " + exception.getMessage());
-        }
-
+        sendTemplateEmail(testRecipient, "New task assigned", emailContent);
     }
 }

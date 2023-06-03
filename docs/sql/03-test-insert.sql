@@ -4,7 +4,6 @@ VALUES ('Ivan', 'Ivanov', 'Ivanovich', 'Developer', 'ivan@gmail.com', 'ACTIVE'),
        ('Anton', 'Antonov', 'Antonovich', 'Manager', 'anton@gmail.com', 'ACTIVE');
 
 
-
 -- CREATE UNIQUE INDEX unique_active_username ON employees (account) WHERE (status = 'ACTIVE');
 --
 -- ALTER TABLE employees DROP CONSTRAINT employees_account_key;

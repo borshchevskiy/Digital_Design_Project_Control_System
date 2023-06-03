@@ -1,12 +1,13 @@
 package ru.borshchevskiy.pcs.web.controllers.integration.employee;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
@@ -29,20 +30,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@RequiredArgsConstructor
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class EmployeeControllerIntegrationTest extends IntegrationTestBase {
 
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private EmployeeRepository employeeRepository;
-    @Autowired
-    private EmployeeMapper employeeMapper;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+
+    private final MockMvc mockMvc;
+    private final AccountRepository accountRepository;
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
+    private final ObjectMapper objectMapper;
+    private final JdbcTemplate jdbcTemplate;
 
 
     @Nested

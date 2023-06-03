@@ -1,12 +1,14 @@
 package ru.borshchevskiy.pcs.service.services.task.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
+import ru.borshchevskiy.pcs.common.exceptions.StatusModificationException;
 import ru.borshchevskiy.pcs.dto.task.TaskDto;
 import ru.borshchevskiy.pcs.dto.task.TaskFilter;
 import ru.borshchevskiy.pcs.dto.task.TaskStatusDto;
@@ -14,13 +16,12 @@ import ru.borshchevskiy.pcs.entities.task.Task;
 import ru.borshchevskiy.pcs.repository.task.TaskRepository;
 import ru.borshchevskiy.pcs.repository.task.TaskSpecificationUtil;
 import ru.borshchevskiy.pcs.service.mappers.task.TaskMapper;
-import ru.borshchevskiy.pcs.service.services.email.EmailService;
 import ru.borshchevskiy.pcs.service.services.task.TaskService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
@@ -75,11 +76,11 @@ public class TaskServiceImpl implements TaskService {
     private TaskDto create(TaskDto dto) {
         Task task = repository.save(taskMapper.createTask(dto));
 
-        log.info("Task id=" + task.getId() + " created.");
+        log.debug("Task id=" + task.getId() + " created.");
 
 //        TODO: После согласования оставить одну публикацию
 //        eventPublisher.publishEvent(task);
-        rabbitTemplate.convertAndSend("app.task","app.task.new", task);
+        rabbitTemplate.convertAndSend("app.task", "app.task.new", task);
 
         return taskMapper.mapToDto(task);
     }
@@ -88,9 +89,9 @@ public class TaskServiceImpl implements TaskService {
         Task task = repository.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException("Task with id=" + dto.getId() + " not found!"));
 
-        taskMapper.mergeTask(task, dto);
+        task = taskMapper.mergeTask(task, dto);
 
-        log.info("Task id=" + task.getId() + " updated.");
+        log.debug("Task id=" + task.getId() + " updated.");
 
         return taskMapper.mapToDto(repository.save(task));
     }
@@ -104,7 +105,7 @@ public class TaskServiceImpl implements TaskService {
                     return t;
                 }).orElseThrow(() -> new NotFoundException("Task with id=" + id + " not found!"));
 
-        log.info("Task id=" + task.getId() + " deleted.");
+        log.debug("Task id=" + task.getId() + " deleted.");
 
         return taskMapper.mapToDto(task);
 
@@ -115,6 +116,25 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto updateStatus(Long id, TaskStatusDto request) {
         return repository.findById(id)
                 .map(task -> {
+                    TaskStatus currentStatus = task.getStatus();
+                    TaskStatus newStatus = request.getStatus();
+
+                    // Изменение статуса возможно только на следующий статус по цепочке,
+                    // нельзя выставить предыдущий статус или перескочить через один.
+                    if (newStatus.ordinal() - currentStatus.ordinal() != 1) {
+                        String exceptionMessageEnding;
+                        // Если достигнут финальный статус, то его изменить нельзя.
+                        if (task.getStatus().ordinal() == TaskStatus.values().length - 1) {
+                            exceptionMessageEnding = " cannot be changed, because it is the final status";
+                        } else {
+                            // Если статус не финальный, указываем на какой можно его заменить
+                            exceptionMessageEnding = " can only be changed to " +
+                                                     TaskStatus.values()[task.getStatus().ordinal() + 1];
+                        }
+
+                        throw new StatusModificationException("Current status " + task.getStatus() + exceptionMessageEnding);
+                    }
+
                     task.setStatus(request.getStatus());
                     return task;
                 })
