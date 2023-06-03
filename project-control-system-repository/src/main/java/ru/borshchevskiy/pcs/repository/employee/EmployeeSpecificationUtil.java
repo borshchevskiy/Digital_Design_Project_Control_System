@@ -9,7 +9,6 @@ import org.springframework.util.ObjectUtils;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
-import ru.borshchevskiy.pcs.entities.task.Task;
 
 import java.util.ArrayList;
 import java.util.List;

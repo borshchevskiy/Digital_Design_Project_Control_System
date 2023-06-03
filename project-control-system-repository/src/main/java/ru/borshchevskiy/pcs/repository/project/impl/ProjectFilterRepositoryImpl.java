@@ -6,9 +6,9 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.dto.project.ProjectFilter;
 import ru.borshchevskiy.pcs.entities.project.Project;
-import ru.borshchevskiy.pcs.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.repository.project.ProjectFilterRepository;
 
 import java.util.ArrayList;

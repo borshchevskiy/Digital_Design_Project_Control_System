@@ -1,9 +1,9 @@
 package ru.borshchevskiy.pcs.repository.employee.impl;
 
+import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
-import ru.borshchevskiy.pcs.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeJdbcRepository;
 import ru.borshchevskiy.pcs.repository.util.jdbc.ConnectionManager;
 
@@ -68,7 +68,7 @@ public class EmployeeJdbcRepositoryImpl implements EmployeeJdbcRepository {
             preparedStatement.setString(2, employee.getLastname());
             preparedStatement.setString(3, employee.getPatronymic());
             preparedStatement.setString(4, employee.getPosition());
-            preparedStatement.setString(5, String.valueOf( employee.getAccount().getId()));
+            preparedStatement.setString(5, String.valueOf(employee.getAccount().getId()));
             preparedStatement.setString(6, employee.getEmail());
             preparedStatement.setString(7, employee.getStatus().name());
 

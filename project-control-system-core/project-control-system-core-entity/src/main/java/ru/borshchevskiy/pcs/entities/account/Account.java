@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.borshchevskiy.pcs.enums.Role;
+import ru.borshchevskiy.pcs.common.enums.Role;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "accounts")
-public class Account  implements UserDetails, Serializable {
+public class Account implements UserDetails, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

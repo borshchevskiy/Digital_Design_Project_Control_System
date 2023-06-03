@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} [%5p] ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
+        </Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <RollingFile name="EmployeeFileAppender" fileName="logs/business/employees/employees.log"
+                     filePattern="logs/business/employees/employees-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="EmployeeWarnFileAppender" fileName="logs/business/employees/employees-warns.log"
+                     filePattern="logs/business/employees/employees-warns-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="ProjectFileAppender" fileName="logs/business/projects/projects.log"
+                     filePattern="logs/business/projects/projects-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="ProjectWarnFileAppender" fileName="logs/business/projects/projects-warns.log"
+                     filePattern="logs/business/projects/projects-warns-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="TaskFileAppender" fileName="logs/business/tasks/tasks.log"
+                     filePattern="logs/business/tasks/tasks-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="TaskWarnFileAppender" fileName="logs/business/tasks/tasks-warns.log"
+                     filePattern="logs/business/tasks/tasks-warns-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="ru.borshchevskiy.pcs.service.services.employee" level="debug" additivity="false">
+            <AppenderRef ref="EmployeeFileAppender"/>
+            <AppenderRef ref="EmployeeWarnFileAppender"/>
+        </Logger>
+        <Logger name="ru.borshchevskiy.pcs.service.services.project" level="debug" additivity="false">
+            <AppenderRef ref="ProjectFileAppender"/>
+            <AppenderRef ref="ProjectWarnFileAppender"/>
+        </Logger>
+        <Logger name="ru.borshchevskiy.pcs.service.services.task" level="debug" additivity="false">
+            <AppenderRef ref="TaskFileAppender"/>
+            <AppenderRef ref="TaskWarnFileAppender"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>

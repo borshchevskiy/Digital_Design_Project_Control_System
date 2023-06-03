@@ -3,12 +3,10 @@ package ru.borshchevskiy.pcs.entities.employee;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.entities.account.Account;
-import ru.borshchevskiy.pcs.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.enums.Role;
 
 import java.io.Serializable;
-import java.util.Set;
 
 @Data
 @Entity

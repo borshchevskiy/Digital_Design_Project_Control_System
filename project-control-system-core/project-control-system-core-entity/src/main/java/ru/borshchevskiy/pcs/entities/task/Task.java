@@ -3,9 +3,9 @@ package ru.borshchevskiy.pcs.entities.task;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
-import ru.borshchevskiy.pcs.enums.TaskStatus;
 
 import java.time.LocalDateTime;
 

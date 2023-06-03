@@ -2,14 +2,14 @@ package ru.borshchevskiy.pcs.repository.task.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
+import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
+import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 import ru.borshchevskiy.pcs.dto.task.TaskFilter;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.entities.task.Task;
-import ru.borshchevskiy.pcs.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.enums.ProjectStatus;
-import ru.borshchevskiy.pcs.enums.TaskStatus;
 import ru.borshchevskiy.pcs.repository.employee.impl.EmployeeJdbcRepositoryImpl;
 import ru.borshchevskiy.pcs.repository.task.TaskJdbcRepository;
 import ru.borshchevskiy.pcs.repository.util.jdbc.ConnectionManager;

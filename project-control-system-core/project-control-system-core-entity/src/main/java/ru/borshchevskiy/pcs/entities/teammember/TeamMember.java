@@ -2,9 +2,9 @@ package ru.borshchevskiy.pcs.entities.teammember;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import ru.borshchevskiy.pcs.common.enums.TeamMemberProjectRole;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.team.Team;
-import ru.borshchevskiy.pcs.enums.TeamMemberProjectRole;
 
 import java.io.Serializable;
 

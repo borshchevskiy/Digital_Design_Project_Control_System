@@ -1,7 +1,7 @@
 package ru.borshchevskiy.pcs.dto.project;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ru.borshchevskiy.pcs.enums.ProjectStatus;
+import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 
 import java.util.List;
 

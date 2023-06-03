@@ -11,34 +11,6 @@
 
     <artifactId>project-control-system-app</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>ru.borshchevskiy</groupId>
-            <artifactId>project-control-system-web</artifactId>
-            <version>${revision}${changelist}</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.borshchevskiy</groupId>
-            <artifactId>project-control-system-repository</artifactId>
-            <version>${revision}${changelist}</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.borshchevskiy</groupId>
-            <artifactId>project-control-system-dto</artifactId>
-            <version>${revision}${changelist}</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.borshchevskiy</groupId>
-            <artifactId>project-control-system-core-entity</artifactId>
-            <version>${revision}${changelist}</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.borshchevskiy</groupId>
-            <artifactId>project-control-system-core-service</artifactId>
-            <version>${revision}${changelist}</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <finalName>project-control-system</finalName>
         <plugins>
@@ -49,7 +21,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.borshchevskiy.pcs.app.App</mainClass>
+                            <mainClass>ru.borshchevskiy.pcs.App</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -61,4 +33,36 @@
         </plugins>
     </build>
 
+    <dependencies>
+        <dependency>
+            <groupId>ru.borshchevskiy</groupId>
+            <artifactId>project-control-system-web</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.borshchevskiy</groupId>
+            <artifactId>project-control-system-dto</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.borshchevskiy</groupId>
+            <artifactId>project-control-system-core-service</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.borshchevskiy</groupId>
+            <artifactId>project-control-system-core-entity</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.borshchevskiy</groupId>
+            <artifactId>project-control-system-repository</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.borshchevskiy</groupId>
+            <artifactId>project-control-system-common</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+    </dependencies>
 </project>
