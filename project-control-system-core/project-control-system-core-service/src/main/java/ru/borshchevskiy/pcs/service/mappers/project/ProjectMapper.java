@@ -25,21 +25,23 @@ public class ProjectMapper {
 
         copyToProject(project, dto);
 
+        // Новый Project должен создаваться в статусе DRAFT
         project.setStatus(ProjectStatus.DRAFT);
 
         return project;
     }
 
-    public void mergeProject(Project project, ProjectDto dto) {
+    public Project mergeProject(Project project, ProjectDto dto) {
 
-        copyToProject(project, dto);
+       return copyToProject(project, dto);
     }
 
-    private static void copyToProject(Project copyTo, ProjectDto copyFrom) {
+    private Project copyToProject(Project copyTo, ProjectDto copyFrom) {
         copyTo.setCode(copyFrom.getCode());
         copyTo.setName(copyFrom.getName());
         copyTo.setDescription(copyFrom.getDescription());
         copyTo.setStatus(copyFrom.getStatus());
 
+        return copyTo;
     }
 }

@@ -89,6 +89,8 @@ public class TaskServiceImpl implements TaskService {
         Task task = repository.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException("Task with id=" + dto.getId() + " not found!"));
 
+        // TODO проверка изменения статуса
+
         task = taskMapper.mergeTask(task, dto);
 
         log.debug("Task id=" + task.getId() + " updated.");
@@ -119,20 +121,19 @@ public class TaskServiceImpl implements TaskService {
                     TaskStatus currentStatus = task.getStatus();
                     TaskStatus newStatus = request.getStatus();
 
+                    // Если достигнут финальный статус, то его изменить нельзя.
+                    if (task.getStatus().ordinal() == TaskStatus.values().length - 1) {
+                        throw new StatusModificationException("Current status " + task.getStatus() +
+                                                              " cannot be changed, because it is the final status");
+                    }
+
                     // Изменение статуса возможно только на следующий статус по цепочке,
                     // нельзя выставить предыдущий статус или перескочить через один.
+                    // Если в запросе неверный статус, указываем на какой можно его заменить
                     if (newStatus.ordinal() - currentStatus.ordinal() != 1) {
-                        String exceptionMessageEnding;
-                        // Если достигнут финальный статус, то его изменить нельзя.
-                        if (task.getStatus().ordinal() == TaskStatus.values().length - 1) {
-                            exceptionMessageEnding = " cannot be changed, because it is the final status";
-                        } else {
-                            // Если статус не финальный, указываем на какой можно его заменить
-                            exceptionMessageEnding = " can only be changed to " +
-                                                     TaskStatus.values()[task.getStatus().ordinal() + 1];
-                        }
-
-                        throw new StatusModificationException("Current status " + task.getStatus() + exceptionMessageEnding);
+                        throw new StatusModificationException("Current status " + task.getStatus() +
+                                                              " can only be changed to " +
+                                                              TaskStatus.values()[task.getStatus().ordinal() + 1]);
                     }
 
                     task.setStatus(request.getStatus());
@@ -142,6 +143,4 @@ public class TaskServiceImpl implements TaskService {
                 .map(taskMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Employee with id=" + id + " not found!"));
     }
-
-
 }

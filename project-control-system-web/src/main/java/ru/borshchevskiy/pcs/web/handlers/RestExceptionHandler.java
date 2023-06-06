@@ -5,10 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.borshchevskiy.pcs.common.exceptions.DeletedItemModificationException;
-import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
-import ru.borshchevskiy.pcs.common.exceptions.StatusModificationException;
-import ru.borshchevskiy.pcs.common.exceptions.UserAlreadyExistsException;
+import ru.borshchevskiy.pcs.common.exceptions.*;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -37,6 +34,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({UserAlreadyExistsException.class})
     public ResponseEntity<String> handleUserAlreadyExistsException(UserAlreadyExistsException exception) {
         log.error("Handled UserAlreadyExistsException.", exception);
+        return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler({RequestDataValidationException.class})
+    public ResponseEntity<String> handleRequestDataValidationException(RequestDataValidationException exception) {
+        log.error("Handled RequestDataValidationException.", exception);
         return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
     }
 
