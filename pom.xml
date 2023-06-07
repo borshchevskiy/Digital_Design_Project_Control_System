@@ -13,6 +13,7 @@
     <artifactId>project-control-system-parent</artifactId>
     <packaging>pom</packaging>
     <version>${revision}${changelist}</version>
+
     <modules>
         <module>project-control-system-web</module>
         <module>project-control-system-repository</module>
@@ -66,6 +67,28 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit</artifactId>
+        </dependency>
+
+        <!--Email-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
 
         <!--Security-->
         <dependency>
@@ -103,7 +126,6 @@
             <scope>test</scope>
         </dependency>
 
-
         <!--Tools-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -117,7 +139,5 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
-
     </dependencies>
-
 </project>

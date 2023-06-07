@@ -4,10 +4,12 @@ package ru.borshchevskiy.pcs.service.mappers.employee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
+import ru.borshchevskiy.pcs.common.exceptions.RequestDataValidationException;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
+import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 
 import java.util.Optional;
 
@@ -37,6 +39,7 @@ public class EmployeeMapper {
 
         copyToEmployee(employee, dto);
 
+        // Новый Employee должен создаваться в статусе NEW
         employee.setStatus(EmployeeStatus.ACTIVE);
 
         return employee;

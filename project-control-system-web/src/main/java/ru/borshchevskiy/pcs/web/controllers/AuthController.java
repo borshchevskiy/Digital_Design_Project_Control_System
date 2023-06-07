@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.borshchevskiy.pcs.common.exceptions.AuthException;
 import ru.borshchevskiy.pcs.dto.account.AccountDto;
 import ru.borshchevskiy.pcs.dto.login.LoginDto;
 import ru.borshchevskiy.pcs.service.services.account.AccountService;
@@ -31,16 +32,22 @@ public class AuthController {
     @Operation(summary = "Вход", description = "Аутентифицироваться в приложении")
     @PostMapping(value = "/login", consumes = APPLICATION_JSON_VALUE)
     public void login(@RequestBody LoginDto credentials,
-                      HttpServletRequest request) throws ServletException {
-
-        request.login(credentials.username(), credentials.password());
+                      HttpServletRequest request) {
+        try {
+            request.login(credentials.username(), credentials.password());
+        } catch (ServletException e) {
+            throw new AuthException(e.getMessage(), e);
+        }
     }
 
     @Operation(summary = "Выход", description = "Выход из приложения")
     @PostMapping(value = "/logout")
-    public void logout(HttpServletRequest request) throws ServletException {
-
-        request.logout();
+    public void logout(HttpServletRequest request) {
+        try {
+            request.logout();
+        } catch (ServletException e) {
+            throw new AuthException(e.getMessage(), e);
+        }
     }
 
 }

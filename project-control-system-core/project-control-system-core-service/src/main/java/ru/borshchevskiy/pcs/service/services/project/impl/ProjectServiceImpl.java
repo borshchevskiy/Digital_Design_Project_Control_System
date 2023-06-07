@@ -1,11 +1,13 @@
 package ru.borshchevskiy.pcs.service.services.project.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
+import ru.borshchevskiy.pcs.common.exceptions.RequestDataValidationException;
 import ru.borshchevskiy.pcs.common.exceptions.StatusModificationException;
 import ru.borshchevskiy.pcs.dto.project.ProjectDto;
 import ru.borshchevskiy.pcs.dto.project.ProjectFilter;
@@ -19,7 +21,7 @@ import ru.borshchevskiy.pcs.service.services.project.ProjectService;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
@@ -56,23 +58,53 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public ProjectDto save(ProjectDto dto) {
+
+        // Т.к. код и наименование являются обязательными, сразу проверяем их наличие
+        if (!StringUtils.hasText(dto.getCode()) || !StringUtils.hasText(dto.getName())) {
+            throw new RequestDataValidationException("Project's code and name can't be empty");
+        }
+
         return dto.getId() == null
                 ? create(dto)
                 : update(dto);
     }
 
     private ProjectDto create(ProjectDto dto) {
+
+        // Проверяем уникальность Project Code
+        if (repository.findByCode(dto.getCode()).isPresent()) {
+            throw new RequestDataValidationException("Project with code " + dto.getCode() + " already exists!");
+        }
+
+        // Создаем новый Project
         Project project = repository.save(projectMapper.createProject(dto));
-        log.info("Project id=" + project.getId() + " created.");
+        log.debug("Project id=" + project.getId() + " created.");
         return projectMapper.mapToDto(project);
     }
 
     private ProjectDto update(ProjectDto dto) {
+
         Project project = repository.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException("Project with id=" + dto.getId() + " not found!"));
-        projectMapper.mergeProject(project, dto);
 
-        log.info("Project id=" + project.getId() + " updated.");
+        // Статус обязателен и не может быть null или изменен при изменени проекта
+        if (dto.getStatus() != project.getStatus()) {
+            throw new RequestDataValidationException("Project status can't be changed! " +
+                                                     "Use specific method to change status.");
+        }
+
+        // При изменении кода, проверяем не занят ли уже этот код. Коды должны быть уникальны.
+        if (!dto.getCode().equals(project.getCode())) {
+
+            // Ищем Project по code, если нашелся, бросаем исключение
+            if (repository.findByCode(dto.getCode()).isPresent()) {
+                throw new RequestDataValidationException("Project with code " + dto.getCode() + " already exists!");
+            }
+        }
+
+        project = projectMapper.mergeProject(project, dto);
+
+        log.debug("Project id=" + project.getId() + " updated.");
 
         return projectMapper.mapToDto(repository.save(project));
     }
@@ -87,9 +119,8 @@ public class ProjectServiceImpl implements ProjectService {
                     return p;
                 }).orElseThrow(() -> new NotFoundException("Project with id=" + id + " not found!"));
 
-        log.info("Project id=" + project.getId() + " deleted.");
+        log.debug("Project id=" + project.getId() + " deleted.");
         return projectMapper.mapToDto(project);
-
 
     }
 
@@ -101,20 +132,19 @@ public class ProjectServiceImpl implements ProjectService {
                     ProjectStatus currentStatus = project.getStatus();
                     ProjectStatus newStatus = request.getStatus();
 
-                    // Изменение статуса возможно только на следующий по цепочке, нельзя выставить предыдщий статус или
-                    // перескочить через один.
-                    if (newStatus.ordinal() - currentStatus.ordinal() != 1) {
-                        String exceptionMessageEnding;
-                        // Если достигнут финальный статус, то его изменить нельзя.
-                        if (project.getStatus().ordinal() == ProjectStatus.values().length - 1) {
-                            exceptionMessageEnding = " cannot be changed, because it is the final status";
-                        } else {
-                            // Если статус не финальный, указываем на какой можнон его заменить
-                            exceptionMessageEnding = " can only be changed to " +
-                                                     ProjectStatus.values()[project.getStatus().ordinal() + 1];
-                        }
+                    // Если достигнут финальный статус, то его изменить нельзя.
+                    if (project.getStatus().ordinal() == ProjectStatus.values().length - 1) {
+                        throw new StatusModificationException("Current status " + project.getStatus() +
+                                                              " cannot be changed, because it is the final status");
+                    }
 
-                        throw new StatusModificationException("Current status " + project.getStatus() + exceptionMessageEnding);
+                    // Изменение статуса возможно только на следующий статус по цепочке,
+                    // нельзя выставить предыдущий статус или перескочить через один.
+                    // Если в запросе неверный статус, указываем на какой можно его заменить
+                    if (newStatus.ordinal() - currentStatus.ordinal() != 1) {
+                        throw new StatusModificationException("Current status " + project.getStatus() +
+                                                              " can only be changed to " +
+                                                              ProjectStatus.values()[project.getStatus().ordinal() + 1]);
                     }
 
                     project.setStatus(request.getStatus());
@@ -122,6 +152,6 @@ public class ProjectServiceImpl implements ProjectService {
                 })
                 .map(repository::save)
                 .map(projectMapper::mapToDto)
-                .orElseThrow(() -> new NotFoundException("Employee with id=" + id + " not found!"));
+                .orElseThrow(() -> new NotFoundException("Project with id=" + id + " not found!"));
     }
 }

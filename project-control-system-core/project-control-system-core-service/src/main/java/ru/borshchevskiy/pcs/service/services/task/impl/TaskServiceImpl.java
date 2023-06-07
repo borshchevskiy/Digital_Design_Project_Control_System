@@ -1,10 +1,14 @@
 package ru.borshchevskiy.pcs.service.services.task.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
+import ru.borshchevskiy.pcs.common.exceptions.StatusModificationException;
 import ru.borshchevskiy.pcs.dto.task.TaskDto;
 import ru.borshchevskiy.pcs.dto.task.TaskFilter;
 import ru.borshchevskiy.pcs.dto.task.TaskStatusDto;
@@ -17,13 +21,15 @@ import ru.borshchevskiy.pcs.service.services.task.TaskService;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository repository;
     private final TaskMapper taskMapper;
+    private final ApplicationEventPublisher eventPublisher;
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -69,7 +75,13 @@ public class TaskServiceImpl implements TaskService {
 
     private TaskDto create(TaskDto dto) {
         Task task = repository.save(taskMapper.createTask(dto));
-        log.info("Task id=" + task.getId() + " created.");
+
+        log.debug("Task id=" + task.getId() + " created.");
+
+//        TODO: После согласования оставить одну публикацию
+//        eventPublisher.publishEvent(task);
+        rabbitTemplate.convertAndSend("app.task", "app.task.new", task);
+
         return taskMapper.mapToDto(task);
     }
 
@@ -77,9 +89,11 @@ public class TaskServiceImpl implements TaskService {
         Task task = repository.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException("Task with id=" + dto.getId() + " not found!"));
 
-        taskMapper.mergeTask(task, dto);
+        // TODO проверка изменения статуса
 
-        log.info("Task id=" + task.getId() + " updated.");
+        task = taskMapper.mergeTask(task, dto);
+
+        log.debug("Task id=" + task.getId() + " updated.");
 
         return taskMapper.mapToDto(repository.save(task));
     }
@@ -93,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
                     return t;
                 }).orElseThrow(() -> new NotFoundException("Task with id=" + id + " not found!"));
 
-        log.info("Task id=" + task.getId() + " deleted.");
+        log.debug("Task id=" + task.getId() + " deleted.");
 
         return taskMapper.mapToDto(task);
 
@@ -104,6 +118,24 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto updateStatus(Long id, TaskStatusDto request) {
         return repository.findById(id)
                 .map(task -> {
+                    TaskStatus currentStatus = task.getStatus();
+                    TaskStatus newStatus = request.getStatus();
+
+                    // Если достигнут финальный статус, то его изменить нельзя.
+                    if (task.getStatus().ordinal() == TaskStatus.values().length - 1) {
+                        throw new StatusModificationException("Current status " + task.getStatus() +
+                                                              " cannot be changed, because it is the final status");
+                    }
+
+                    // Изменение статуса возможно только на следующий статус по цепочке,
+                    // нельзя выставить предыдущий статус или перескочить через один.
+                    // Если в запросе неверный статус, указываем на какой можно его заменить
+                    if (newStatus.ordinal() - currentStatus.ordinal() != 1) {
+                        throw new StatusModificationException("Current status " + task.getStatus() +
+                                                              " can only be changed to " +
+                                                              TaskStatus.values()[task.getStatus().ordinal() + 1]);
+                    }
+
                     task.setStatus(request.getStatus());
                     return task;
                 })
@@ -111,6 +143,4 @@ public class TaskServiceImpl implements TaskService {
                 .map(taskMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Employee with id=" + id + " not found!"));
     }
-
-
 }

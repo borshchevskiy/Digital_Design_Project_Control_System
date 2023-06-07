@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>New Task Notification</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<p th:text="'Hello, ' + ${firstname} + ' ' + ${lastname} + '!'">Hello!</p>
+<p th:text="'Email: ' + ${email}">Email</p>
+<br>
+<p>
+    A new task has been assigned to you!
+</p>
+<br>
+<ul>
+    <li>Project name: <span th:text="${projectName}">Project name</span></li>
+    <li>Task name: <span th:text="${taskName}">Task name</span></li>
+    <li>Task Description: <span th:text="${taskDescription}">Task Description</span></li>
+    <li>Deadline: <span th:text="${deadline}">Deadline</span></li>
+    <li>Labor costs: <span th:text="${laborCosts} + ' hours'">Labor costs</span></li>
+    <li>Author: <span th:text="${authorName}">Author</span></li>
+    <li>Task id: <span th:text="${taskId}">Task id</span></li>
+</ul>
+<br>
+<p>
+    Automatically sent by Project Control System.
+</p>
+</body>
+</html>

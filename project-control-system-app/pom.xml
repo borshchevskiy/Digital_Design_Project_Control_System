@@ -11,28 +11,6 @@
 
     <artifactId>project-control-system-app</artifactId>
 
-    <build>
-        <finalName>project-control-system</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.5.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>ru.borshchevskiy.pcs.App</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <appendAssemblyId>false</appendAssemblyId>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>ru.borshchevskiy</groupId>
@@ -65,4 +43,42 @@
             <version>${revision}${changelist}</version>
         </dependency>
     </dependencies>
+    <build>
+        <finalName>project-control-system</finalName>
+        <!--        <plugins>-->
+        <!--            <plugin>-->
+        <!--                <groupId>org.apache.maven.plugins</groupId>-->
+        <!--                <artifactId>maven-assembly-plugin</artifactId>-->
+        <!--                <version>3.5.0</version>-->
+        <!--                <configuration>-->
+        <!--                    <archive>-->
+        <!--                        <manifest>-->
+        <!--                            <mainClass>ru.borshchevskiy.pcs.App</mainClass>-->
+        <!--                        </manifest>-->
+        <!--                    </archive>-->
+        <!--                    <descriptorRefs>-->
+        <!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+        <!--                    </descriptorRefs>-->
+        <!--                    <appendAssemblyId>false</appendAssemblyId>-->
+        <!--                </configuration>-->
+        <!--            </plugin>-->
+        <!--        </plugins>-->
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--                <configuration>-->
+                <!--                    <archive>-->
+                <!--                        <manifest>-->
+                <!--                            <mainClass>ru.borshchevskiy.pcs.App</mainClass>-->
+                <!--                        </manifest>-->
+                <!--                    </archive>-->
+                <!--                    <descriptorRefs>-->
+                <!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+                <!--                    </descriptorRefs>-->
+                <!--                    <appendAssemblyId>false</appendAssemblyId>-->
+                <!--                </configuration>-->
+            </plugin>
+        </plugins>
+    </build>
 </project>

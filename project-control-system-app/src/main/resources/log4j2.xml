@@ -19,9 +19,9 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
-        <RollingFile name="EmployeeWarnFileAppender" fileName="logs/business/employees/employees-warns.log"
-                     filePattern="logs/business/employees/employees-warns-%d{yyyy-MM-dd}-%i.log">
-            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+        <RollingFile name="EmployeeWarnFileAppender" fileName="logs/business/employees/employees-errors.log"
+                     filePattern="logs/business/employees/employees-errors-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout>
                 <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
@@ -40,9 +40,9 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
-        <RollingFile name="ProjectWarnFileAppender" fileName="logs/business/projects/projects-warns.log"
-                     filePattern="logs/business/projects/projects-warns-%d{yyyy-MM-dd}-%i.log">
-            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+        <RollingFile name="ProjectWarnFileAppender" fileName="logs/business/projects/projects-errors.log"
+                     filePattern="logs/business/projects/projects-errors-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout>
                 <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
@@ -61,9 +61,41 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
-        <RollingFile name="TaskWarnFileAppender" fileName="logs/business/tasks/tasks-warns.log"
-                     filePattern="logs/business/tasks/tasks-warns-%d{yyyy-MM-dd}-%i.log">
-            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+        <RollingFile name="TaskWarnFileAppender" fileName="logs/business/tasks/tasks-errors.log"
+                     filePattern="logs/business/tasks/tasks-errors-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="EmailFileAppender" fileName="logs/business/email/email-notification.log"
+                     filePattern="logs/business/email/email-notification-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="EmailErrorFileAppender" fileName="logs/business/email/email-errors.log"
+                     filePattern="logs/business/email/email-errors-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="ExceptionHandlerAppender" fileName="logs/business/exceptions/handled-exceptions.log"
+                     filePattern="logs/business/exceptions/handled-exceptions-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout>
                 <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
@@ -85,6 +117,13 @@
         <Logger name="ru.borshchevskiy.pcs.service.services.task" level="debug" additivity="false">
             <AppenderRef ref="TaskFileAppender"/>
             <AppenderRef ref="TaskWarnFileAppender"/>
+        </Logger>
+        <Logger name="ru.borshchevskiy.pcs.service.services.email" level="debug" additivity="false">
+            <AppenderRef ref="EmailFileAppender"/>
+            <AppenderRef ref="EmailErrorFileAppender"/>
+        </Logger>
+        <Logger name="ru.borshchevskiy.pcs.web.handlers" level="debug" additivity="false">
+            <AppenderRef ref="ExceptionHandlerAppender"/>
         </Logger>
         <Root level="info">
             <AppenderRef ref="ConsoleAppender"/>

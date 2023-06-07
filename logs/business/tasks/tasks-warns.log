@@ -1,0 +1,1 @@
+2023-06-01 15:50:25.134 [ERROR] DESKTOP-I94FBGC --- [nio-8080-exec-2] r.b.p.s.s.e.i.EmailServiceImpl           : Failed to send email to freer1de@yandex.ru. Reason: jakarta.mail.AuthenticationFailedException: failed to connect, no password specified?, with message: Authentication failed

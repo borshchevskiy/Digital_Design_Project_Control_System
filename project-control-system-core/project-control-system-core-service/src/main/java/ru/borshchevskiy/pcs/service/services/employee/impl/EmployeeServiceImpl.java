@@ -1,12 +1,14 @@
 package ru.borshchevskiy.pcs.service.services.employee.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.common.exceptions.DeletedItemModificationException;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
+import ru.borshchevskiy.pcs.common.exceptions.RequestDataValidationException;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
@@ -18,7 +20,7 @@ import ru.borshchevskiy.pcs.service.services.employee.EmployeeService;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
@@ -66,15 +68,30 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeDto save(EmployeeDto dto) {
+        // Т.к. firstname и lastname обязательные, проверяем их наличие
+        if (!StringUtils.hasText(dto.getFirstname()) || !StringUtils.hasText(dto.getLastname())) {
+            throw new RequestDataValidationException("Firstname and Lastname can't be empty");
+        }
+
         return dto.getId() == null
                 ? create(dto)
                 : update(dto);
     }
 
     private EmployeeDto create(EmployeeDto dto) {
+
+        // Проверяем есть ли уже Employee для этой учетной записи
+        // Если есть и он ACTIVE, бросаем Exception
+        Employee employeeByUsername = repository.findByUsername(dto.getUsername()).orElse(null);
+
+        if (employeeByUsername != null && employeeByUsername.getStatus() != EmployeeStatus.DELETED) {
+            throw new RequestDataValidationException("Employee already exists for this username!");
+        }
+
+        // Проверки пройдены, создаем Employee
         Employee employee = repository.save(employeeMapper.createEmployee(dto));
 
-        log.info("Employee id=" + employee.getId() + " created.");
+        log.debug("Employee id=" + employee.getId() + " created.");
 
         return employeeMapper.mapToDto(employee);
     }
@@ -84,28 +101,45 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = repository.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException("Employee not found!"));
 
+        // Изменить удаленного сотрудника нельзя
         if (employee.getStatus() == EmployeeStatus.DELETED) {
-            log.warn("Attempt to modify deleted Employee with id=" + employee.getId());
+            log.error("Attempt to modify deleted Employee with id=" + employee.getId());
             throw new DeletedItemModificationException("Can't modify deleted objects!");
         }
 
+        // Статус обязателен и не может быть null или изменен при изменени сотрудника
+        if (dto.getStatus() != employee.getStatus()) {
+            throw new RequestDataValidationException("Employee status can't be null!");
+        }
+
+        // Если username из запроса не пуст и отличается от username у изменяемого Employee, то нужно проверить
+        // существует ли уже Employee для username из запроса. Если существует, то мы не можем поменять username, т.к.
+        // получим 2 Employee с одинаковым username.
+        if (dto.getUsername() != null && !dto.getUsername().equals(employee.getAccount().getUsername())) {
+
+            // Ищем Employee по username, если нашелся, бросаем исключение
+            if (repository.findByUsername(dto.getUsername()).isPresent()) {
+                throw new RequestDataValidationException("Employee already exists for this username!");
+            }
+        }
+
+        // Все проверки пройдены, обновляем Employee
         employee = employeeMapper.mergeEmployee(employee, dto);
 
-        log.info("Employee id=" + employee.getId() + " modified.");
+        log.debug("Employee id=" + employee.getId() + " modified.");
 
         return employeeMapper.mapToDto(repository.save(employee));
     }
 
-    // Если Employee нашелся, меняет статус на DELETED, возвраащет true
-    // Если нет, возвращает false
+    // При удалении только меняется статус на DELETED
     @Override
     @Transactional
     public EmployeeDto deleteById(Long id) {
 
-        Employee employee = repository.findById(id)
-                .map(emp -> {
+        Employee employee = repository.findById(id).map(emp ->
+                        {
                             if (emp.getStatus() == EmployeeStatus.DELETED) {
-                                log.warn("Attempt to delete already deleted Employee with id=" + emp.getId());
+                                log.error("Attempt to delete already deleted Employee with id=" + emp.getId());
                                 throw new DeletedItemModificationException("Employee already deleted!");
                             }
                             emp.setStatus(EmployeeStatus.DELETED);
