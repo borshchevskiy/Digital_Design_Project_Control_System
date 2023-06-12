@@ -1,6 +1,7 @@
 package ru.borshchevskiy.pcs.service.services.account.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +17,7 @@ import ru.borshchevskiy.pcs.service.services.account.AccountService;
 
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AccountServiceImpl implements AccountService, UserDetailsService {
@@ -37,7 +39,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
                 : update(request);
     }
 
-    private AccountDto create(AccountDto request) {
+    public AccountDto create(AccountDto request) {
         Optional<Account> optionalAccount = repository.findByUsername(request.getUsername());
 
         if (optionalAccount.isPresent()) {
@@ -45,18 +47,30 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         }
 
         Account account = repository.save(accountMapper.createAccount(request));
+        log.debug("Account " + account.getUsername() + " created.");
         return accountMapper.mapToDto(account);
     }
 
-    private AccountDto update(AccountDto request) {
+    public AccountDto update(AccountDto request) {
 
         Account account = repository.findById(request.getId())
                 .orElseThrow(() -> new NotFoundException("Account not found!"));
 
         account = accountMapper.mergeAccount(account, request);
-
-        return accountMapper.mapToDto(repository.save(account));
+        log.debug("Account id=" +  account.getId() + " updated.");
+        return accountMapper.mapToDto(repository.saveAndFlush(account));
     }
 
+    public AccountDto deleteById(AccountDto request) {
+
+        Account account = repository.findById(request.getId())
+                .map(a -> {
+                    repository.delete(a);
+                    return a;
+                })
+                .orElseThrow(() -> new NotFoundException("Account not found!"));
+        log.debug("Account id=" +  account.getId() + " deleted.");
+        return accountMapper.mapToDto(account);
+    }
 
 }

@@ -19,7 +19,7 @@ public class TaskDto {
     @Schema(description = "id исполнителя")
     private Long implementerId;
     @Schema(description = "Трудозатраты")
-    private String laborCosts;
+    private Integer laborCosts;
     @Schema(description = "Крайний срок")
     private LocalDateTime deadline;
     @Schema(description = "Статус")

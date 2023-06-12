@@ -8,8 +8,9 @@ import ru.borshchevskiy.pcs.dto.account.AccountDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -34,7 +35,10 @@ public class AccountMapper {
 
         copyToAccount(account, dto);
 
-        account.setRoles(Collections.singleton(Role.USER));
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.USER);
+
+        account.setRoles(roles);
 
         return account;
     }

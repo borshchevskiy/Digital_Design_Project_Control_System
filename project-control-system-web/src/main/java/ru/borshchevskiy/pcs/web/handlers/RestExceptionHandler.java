@@ -43,4 +43,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
     }
 
+    @ExceptionHandler({FileDeleteException.class})
+    public ResponseEntity<String> handleFileDeleteException(FileDeleteException exception) {
+        log.error("Handled FileDeleteException.", exception);
+        return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
+    }
+
 }

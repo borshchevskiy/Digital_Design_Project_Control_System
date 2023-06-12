@@ -1,10 +1,9 @@
 package ru.borshchevskiy.pcs.service.services.integration.employee.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
@@ -21,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EmployeeServiceSaveCreateIT extends IntegrationTestBase {
 
 
@@ -29,7 +27,7 @@ class EmployeeServiceSaveCreateIT extends IntegrationTestBase {
     private final AccountRepository accountRepository;
     private final JdbcTemplate jdbcTemplate;
 
-    @BeforeAll
+    @BeforeEach
     void prepare() {
         Account account1 = new Account();
         account1.setUsername("account1");
@@ -38,7 +36,7 @@ class EmployeeServiceSaveCreateIT extends IntegrationTestBase {
         accountRepository.save(account1);
     }
 
-    @AfterAll
+    @AfterEach
     void clean() {
         jdbcTemplate.execute("TRUNCATE TABLE test.public.accounts CASCADE ");
         jdbcTemplate.execute("ALTER SEQUENCE employees_id_seq RESTART");

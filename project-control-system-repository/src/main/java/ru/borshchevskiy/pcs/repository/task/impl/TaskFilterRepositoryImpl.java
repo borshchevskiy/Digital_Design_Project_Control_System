@@ -43,13 +43,13 @@ public class TaskFilterRepositoryImpl implements TaskFilterRepository {
         if (filter.status() != null) {
             attributesPredicates.add(criteriaBuilder.equal(task.get("status").as(String.class), filter.status().name()));
         }
-        if (filter.implementerName() != null) {
+        if (filter.implementerLastname() != null) {
             Join<Task, Employee> implementer = task.join("implementer");
-            attributesPredicates.add(criteriaBuilder.like(implementer.get("lastname"), "%" + filter.implementerName() + "%"));
+            attributesPredicates.add(criteriaBuilder.like(implementer.get("lastname"), "%" + filter.implementerLastname() + "%"));
         }
-        if (filter.authorName() != null) {
+        if (filter.authorLastname() != null) {
             Join<Task, Employee> author = task.join("author");
-            attributesPredicates.add(criteriaBuilder.like(author.get("lastname"), "%" + filter.authorName() + "%"));
+            attributesPredicates.add(criteriaBuilder.like(author.get("lastname"), "%" + filter.authorLastname() + "%"));
         }
         if (filter.deadline() != null) {
             attributesPredicates.add(criteriaBuilder.lessThan(task.get("deadline"), filter.deadline()));

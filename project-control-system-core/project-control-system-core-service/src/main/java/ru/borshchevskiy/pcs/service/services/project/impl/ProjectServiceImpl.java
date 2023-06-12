@@ -87,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = repository.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException("Project with id=" + dto.getId() + " not found!"));
 
-        // Статус обязателен и не может быть null или изменен при изменени проекта
+        // Статус обязателен, он не может быть null или изменен при изменени проекта
         if (dto.getStatus() != project.getStatus()) {
             throw new RequestDataValidationException("Project status can't be changed! " +
                                                      "Use specific method to change status.");
@@ -127,6 +127,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public ProjectDto updateStatus(Long id, ProjectStatusDto request) {
+        if (request.getStatus() == null) {
+            throw new StatusModificationException("Status can't be null.");
+        }
+
         return repository.findById(id)
                 .map(project -> {
                     ProjectStatus currentStatus = project.getStatus();
@@ -140,7 +144,7 @@ public class ProjectServiceImpl implements ProjectService {
 
                     // Изменение статуса возможно только на следующий статус по цепочке,
                     // нельзя выставить предыдущий статус или перескочить через один.
-                    // Если в запросе неверный статус, указываем на какой можно его заменить
+                    // Если в запросе неверный статус, указываем на какой можно его изменить
                     if (newStatus.ordinal() - currentStatus.ordinal() != 1) {
                         throw new StatusModificationException("Current status " + project.getStatus() +
                                                               " can only be changed to " +

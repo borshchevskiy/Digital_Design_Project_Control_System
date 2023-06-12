@@ -17,6 +17,7 @@ import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
+import ru.borshchevskiy.pcs.repository.account.AccountRepository;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeSpecificationUtil;
 import ru.borshchevskiy.pcs.service.mappers.employee.EmployeeMapper;
@@ -40,6 +41,8 @@ class EmployeeServiceImplTest {
     private EmployeeRepository repository;
     @Mock
     private EmployeeMapper employeeMapper;
+    @Mock
+    private AccountRepository accountRepository;
     @InjectMocks
     private EmployeeServiceImpl employeeService;
 
@@ -216,25 +219,30 @@ class EmployeeServiceImplTest {
 
             final Employee unSavedEmployee = new Employee();
             unSavedEmployee.setFirstname(name);
+            unSavedEmployee.setLastname(name);
             unSavedEmployee.setAccount(account);
 
             final Employee savedEmployee = new Employee();
             savedEmployee.setId(id);
             savedEmployee.setFirstname(name);
+            savedEmployee.setLastname(name);
             savedEmployee.setAccount(account);
 
             final EmployeeDto requestDto = new EmployeeDto();
             requestDto.setFirstname(name);
+            requestDto.setLastname(name);
             requestDto.setUsername(username);
 
             final EmployeeDto responseDto = new EmployeeDto();
             responseDto.setId(id);
             responseDto.setFirstname(name);
+            responseDto.setLastname(name);
             responseDto.setUsername(username);
 
             doReturn(savedEmployee).when(repository).save(unSavedEmployee);
             doReturn(unSavedEmployee).when(employeeMapper).createEmployee(requestDto);
             doReturn(responseDto).when(employeeMapper).mapToDto(savedEmployee);
+            doReturn(Optional.of(account)).when(accountRepository).findByUsername(username);
 
             EmployeeDto actualResult = employeeService.save(requestDto);
 
@@ -251,23 +259,28 @@ class EmployeeServiceImplTest {
         void updateSuccess() {
             final Long id = 1L;
             final String firstname = "firstname";
+            final String lastname = "lastname";
             final String newFirstname = "newFirstname";
 
             final Employee employee = new Employee();
             employee.setId(id);
             employee.setFirstname(firstname);
+            employee.setLastname(lastname);
 
             final Employee updatedEmployee = new Employee();
             updatedEmployee.setId(id);
             updatedEmployee.setFirstname(newFirstname);
+            updatedEmployee.setLastname(lastname);
 
             final EmployeeDto requestDto = new EmployeeDto();
             requestDto.setId(id);
             requestDto.setFirstname(newFirstname);
+            requestDto.setLastname(lastname);
 
             final EmployeeDto responseDto = new EmployeeDto();
             responseDto.setId(id);
             responseDto.setFirstname(newFirstname);
+            responseDto.setLastname(lastname);
 
             doReturn(Optional.of(employee)).when(repository).findById(id);
             doReturn(updatedEmployee).when(repository).save(updatedEmployee);
@@ -286,10 +299,12 @@ class EmployeeServiceImplTest {
         void updateEmployeeNotFound() {
             final Long id = 1L;
             final String newFirstname = "newFirstname";
+            final String lastname = "lastname";
 
             final EmployeeDto requestDto = new EmployeeDto();
             requestDto.setId(id);
             requestDto.setFirstname(newFirstname);
+            requestDto.setLastname(lastname);
 
             doReturn(Optional.empty()).when(repository).findById(anyLong());
 
@@ -301,16 +316,19 @@ class EmployeeServiceImplTest {
         void updateDeletedEmployeeFail() {
             final Long id = 1L;
             final String firstname = "firstname";
+            final String lastname = "lastname";
             final String newFirstname = "newFirstname";
 
             final Employee employee = new Employee();
             employee.setId(id);
             employee.setFirstname(firstname);
+            employee.setLastname(lastname);
             employee.setStatus(EmployeeStatus.DELETED);
 
             final EmployeeDto requestDto = new EmployeeDto();
             requestDto.setId(id);
             requestDto.setFirstname(newFirstname);
+            requestDto.setLastname(lastname);
 
             doReturn(Optional.of(employee)).when(repository).findById(id);
 

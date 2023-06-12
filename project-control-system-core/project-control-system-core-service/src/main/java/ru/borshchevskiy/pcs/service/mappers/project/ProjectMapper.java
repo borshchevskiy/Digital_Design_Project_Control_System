@@ -33,7 +33,7 @@ public class ProjectMapper {
 
     public Project mergeProject(Project project, ProjectDto dto) {
 
-       return copyToProject(project, dto);
+        return copyToProject(project, dto);
     }
 
     private Project copyToProject(Project copyTo, ProjectDto copyFrom) {

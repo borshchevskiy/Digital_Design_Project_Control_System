@@ -37,13 +37,13 @@ public class TaskSpecificationUtil {
             if (!ObjectUtils.isEmpty(filter.status())) {
                 attributesPredicates.add(criteriaBuilder.equal(root.get("status").as(String.class), filter.status().name()));
             }
-            if (!ObjectUtils.isEmpty(filter.implementerName())) {
+            if (!ObjectUtils.isEmpty(filter.implementerLastname())) {
                 Join<Task, Employee> implementer = root.join("implementer");
-                attributesPredicates.add(criteriaBuilder.like(implementer.get("lastname"), "%" + filter.implementerName() + "%"));
+                attributesPredicates.add(criteriaBuilder.like(implementer.get("lastname"), "%" + filter.implementerLastname() + "%"));
             }
-            if (!ObjectUtils.isEmpty(filter.authorName())) {
+            if (!ObjectUtils.isEmpty(filter.authorLastname())) {
                 Join<Task, Employee> author = root.join("author");
-                attributesPredicates.add(criteriaBuilder.like(author.get("lastname"), "%" + filter.authorName() + "%"));
+                attributesPredicates.add(criteriaBuilder.like(author.get("lastname"), "%" + filter.authorLastname() + "%"));
             }
             if (!ObjectUtils.isEmpty(filter.deadline())) {
                 attributesPredicates.add(criteriaBuilder.lessThan(root.get("deadline"), filter.deadline()));

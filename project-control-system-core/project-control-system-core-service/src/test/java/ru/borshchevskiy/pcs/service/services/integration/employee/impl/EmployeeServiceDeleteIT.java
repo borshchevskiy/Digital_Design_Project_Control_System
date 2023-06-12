@@ -1,15 +1,12 @@
 package ru.borshchevskiy.pcs.service.services.integration.employee.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.common.exceptions.DeletedItemModificationException;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
@@ -25,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EmployeeServiceDeleteIT extends IntegrationTestBase {
 
 
@@ -33,8 +29,7 @@ class EmployeeServiceDeleteIT extends IntegrationTestBase {
     private final EmployeeRepository employeeRepository;
     private final JdbcTemplate jdbcTemplate;
 
-
-    @BeforeAll
+    @BeforeEach
     void prepare() {
         Employee employee1 = new Employee();
         employee1.setFirstname("Firstname1");
@@ -51,7 +46,7 @@ class EmployeeServiceDeleteIT extends IntegrationTestBase {
         employeeRepository.save(employee2);
     }
 
-    @AfterAll
+    @AfterEach
     void clean() {
         jdbcTemplate.execute("TRUNCATE TABLE test.public.accounts CASCADE ");
         jdbcTemplate.execute("ALTER SEQUENCE employees_id_seq RESTART");
@@ -59,8 +54,6 @@ class EmployeeServiceDeleteIT extends IntegrationTestBase {
     }
 
     @Test
-    @Transactional
-    @Rollback
     void deleteSuccess() {
         final Long id = 1L;
 

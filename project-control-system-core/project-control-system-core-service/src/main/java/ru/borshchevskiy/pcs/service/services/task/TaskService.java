@@ -1,5 +1,6 @@
 package ru.borshchevskiy.pcs.service.services.task;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.dto.task.TaskDto;
 import ru.borshchevskiy.pcs.dto.task.TaskFilter;
 import ru.borshchevskiy.pcs.dto.task.TaskStatusDto;
@@ -22,4 +23,10 @@ public interface TaskService {
 
     List<TaskDto> findAllByProjectId(Long id);
 
+    List<TaskDto> addReferences(Long id, List<Long> referenceIds);
+
+    List<TaskDto> removeReferences(Long id, List<Long> referenceIds);
+
+
+    List<TaskDto> getReferences(Long id);
 }

@@ -14,7 +14,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TemplateProcessor {
 
-    @Value("${spring.mail.templates.path}")
+    @Value("${app.mail.templates.path}")
     private String newTaskTemplateLocation;
     private final SpringTemplateEngine templateEngine;
 

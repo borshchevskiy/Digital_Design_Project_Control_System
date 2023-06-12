@@ -4,6 +4,52 @@ databaseChangeLog:
       author: iborschevskiy
       changes:
         - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: account_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: roles
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+
+  - changeSet:
+      id: 3
+      author: iborschevskiy
+      changes:
+        - createTable:
             tableName: employees
             columns:
               - column:
@@ -30,10 +76,12 @@ databaseChangeLog:
                   name: position
                   type: varchar(255)
               - column:
-                  name: account
-                  type: varchar(255)
+                  name: account_id
+                  type: bigint
                   constraints:
-                    unique: true
+                    foreignKeyName: fk_employee_account
+                    referencedTableName: accounts
+                    referencedColumnNames: id
               - column:
                   name: email
                   type: varchar(255)
@@ -46,7 +94,7 @@ databaseChangeLog:
                     nullable: false
 
   - changeSet:
-      id: 2
+      id: 4
       author: iborschevskiy
       changes:
         - createTable:
@@ -80,7 +128,7 @@ databaseChangeLog:
                     nullable: false
 
   - changeSet:
-      id: 3
+      id: 5
       author: iborschevskiy
       changes:
         - createTable:
@@ -97,13 +145,13 @@ databaseChangeLog:
                   name: project_id
                   type: bigint
                   constraints:
-                    nullable: false
                     foreignKeyName: team_project_fk
+                    deleteCascade: true
                     referencedTableName: projects
                     referencedColumnNames: id
 
   - changeSet:
-      id: 4
+      id: 6
       author: iborschevskiy
       changes:
         - createTable:
@@ -120,7 +168,7 @@ databaseChangeLog:
                   name: team_id
                   type: bigint
                   constraints:
-                    nullable: false
+                    deleteCascade: true
                     foreignKeyName: team_member_team_fk
                     referencedTableName: teams
                     referencedColumnNames: id
@@ -128,7 +176,6 @@ databaseChangeLog:
                   name: employee_id
                   type: bigint
                   constraints:
-                    nullable: false
                     foreignKeyName: team_member_employee_fk
                     referencedTableName: employees
                     referencedColumnNames: id
@@ -139,7 +186,7 @@ databaseChangeLog:
                     nullable: false
 
   - changeSet:
-      id: 5
+      id: 7
       author: iborschevskiy
       changes:
         - createTable:
@@ -201,6 +248,59 @@ databaseChangeLog:
                   name: project_id
                   type: bigint
                   constraints:
+                    deleteCascade: true
                     foreignKeyName: task_project_fk
                     referencedTableName: projects
+                    referencedColumnNames: id
+  - changeSet:
+      id: 8
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: task_attachments
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: path
+                  type: varchar(255)
+              - column:
+                  name: filename
+                  type: varchar(255)
+              - column:
+                  name: size
+                  type: bigint
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    deleteCascade: true
+                    foreignKeyName: fk_task_attachment_task
+                    referencedTableName: tasks
+                    referencedColumnNames: id
+  - changeSet:
+      id: 9
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: tasks_references_to
+            columns:
+              - column:
+                  name: referenced_by_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: referenced_by_id
+                    referencedTableName: tasks
+                    referencedColumnNames: id
+              - column:
+                  name: references_to_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: references_to_id
+                    referencedTableName: tasks
                     referencedColumnNames: id

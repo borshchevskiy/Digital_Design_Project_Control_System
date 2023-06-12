@@ -222,14 +222,14 @@ public class TaskJdbcRepositoryImpl implements TaskJdbcRepository {
             parameters.add(filter.status().name());
         }
 
-        if (filter.implementerName() != null) {
+        if (filter.implementerLastname() != null) {
             whereSql.add("ei.lastname LIKE ?");
-            parameters.add("%" + filter.implementerName() + "%");
+            parameters.add("%" + filter.implementerLastname() + "%");
         }
 
-        if (filter.authorName() != null) {
+        if (filter.authorLastname() != null) {
             whereSql.add("ea.lastname LIKE ?");
-            parameters.add("%" + filter.authorName() + "%");
+            parameters.add("%" + filter.authorLastname() + "%");
         }
 
         if (filter.deadline() != null) {

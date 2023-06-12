@@ -1,6 +1,7 @@
 package ru.borshchevskiy.pcs.web.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Аутентификация", description = "Регистрация, вход и выход из приложения")
 @RequiredArgsConstructor
 public class AuthController {
 
