@@ -11,6 +11,7 @@ import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.common.exceptions.RequestDataValidationException;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
@@ -19,6 +20,7 @@ import ru.borshchevskiy.pcs.service.mappers.employee.EmployeeMapper;
 import ru.borshchevskiy.pcs.service.services.employee.EmployeeService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -123,7 +125,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         // Если username из запроса не пуст и отличается от username у изменяемого Employee, то нужно проверить
         // существует ли уже Employee с username из запроса. Если существует, то мы не можем поменять username, т.к.
         // получим 2 Employee с одинаковым username.
-        if (dto.getUsername() != null && !dto.getUsername().equals(employee.getAccount().getUsername())) {
+        if (dto.getUsername() != null
+            && !dto.getUsername().equals(Optional.ofNullable(employee.getAccount())
+                .map(Account::getUsername)
+                .orElse(null))) {
 
             // Ищем Employee по username, если нашелся, бросаем исключение
             if (repository.findByUsername(dto.getUsername()).isPresent()) {

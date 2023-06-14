@@ -40,7 +40,8 @@ import java.time.Month;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest(properties = "spring.main.allow-bean-definition-overriding=true")
+@SpringBootTest
+//        (properties = "spring.main.allow-bean-definition-overriding=true")
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
 @RabbitListenerTest
@@ -115,7 +116,7 @@ class EmailServiceIT extends IntegrationTestBase {
     @Test
     @WithMockUser(value = "username1", password = "password1")
     @Transactional
-    @Rollback
+//    @Rollback
     void createTask() {
         final Long id = 1L;
 
@@ -124,7 +125,6 @@ class EmailServiceIT extends IntegrationTestBase {
 
         TaskDto createRequest = new TaskDto();
         createRequest.setName("taskName");
-
         createRequest.setProjectId(1L);
         createRequest.setLaborCosts(100);
         createRequest.setDeadline(LocalDateTime.of(2023, Month.DECEMBER, 31, 0, 0));
