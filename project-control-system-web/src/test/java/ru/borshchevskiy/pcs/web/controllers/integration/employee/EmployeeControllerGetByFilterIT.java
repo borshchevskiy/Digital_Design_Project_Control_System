@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.common.enums.Role;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.dto.employee.filter.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
@@ -43,10 +43,9 @@ class EmployeeControllerGetByFilterIT extends IntegrationTestBase {
     private final ObjectMapper objectMapper;
     private final JdbcTemplate jdbcTemplate;
     private Account account;
-    EmployeeDto dto1;
-    EmployeeDto dto2;
-    EmployeeDto dto3;
-    List<EmployeeDto> employees = new ArrayList<>();
+    private EmployeeDto dto1;
+    private EmployeeDto dto2;
+    private final List<EmployeeDto> employees = new ArrayList<>();
 
     @BeforeEach
     void prepare() {
@@ -83,7 +82,6 @@ class EmployeeControllerGetByFilterIT extends IntegrationTestBase {
 
         dto1 = employeeMapper.mapToDto(save1);
         dto2 = employeeMapper.mapToDto(save2);
-        dto3 = employeeMapper.mapToDto(save3);
 
         employeeRepository.delete(employee3);
 

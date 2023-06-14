@@ -1,7 +1,7 @@
 package ru.borshchevskiy.pcs.repository.employee.impl;
 
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.dto.employee.filter.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeJdbcRepository;

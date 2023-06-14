@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 import ru.borshchevskiy.pcs.common.enums.Role;
 import ru.borshchevskiy.pcs.dto.account.AccountDto;
+import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
+import ru.borshchevskiy.pcs.repository.account.AccountRepository;
 import ru.borshchevskiy.pcs.service.services.account.AccountService;
 import ru.borshchevskiy.pcs.service.services.integration.IntegrationTestBase;
 
@@ -24,28 +26,33 @@ class AccountServiceUpdateIT extends IntegrationTestBase {
 
 
     private final AccountService accountService;
+    private final AccountRepository accountRepository;
     private final JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void prepare() {
-        AccountDto accountDto = new AccountDto();
-        accountDto.setUsername("username");
-        accountDto.setPassword("password");
+        AccountDto account = new AccountDto();
+        account.setUsername("username");
+        account.setPassword("password");
+        account.setFirstname("firstname");
+        account.setLastname("lastname");
 
         Set<Role> roles = new HashSet<>();
         roles.add(Role.USER);
 
-        accountDto.setRoles(roles);
+        account.setRoles(roles);
 
-        accountService.save(accountDto);
+        accountService.save(account);
     }
 
 
     @AfterEach
     void cleanDatabase() {
         jdbcTemplate.execute("TRUNCATE TABLE test.public.accounts CASCADE ");
+        jdbcTemplate.execute("TRUNCATE TABLE test.public.employees CASCADE ");
         jdbcTemplate.execute("TRUNCATE TABLE test.public.roles CASCADE ");
         jdbcTemplate.execute("ALTER SEQUENCE accounts_id_seq RESTART");
+        jdbcTemplate.execute("ALTER SEQUENCE employees_id_seq RESTART");
         jdbcTemplate.execute("ALTER SEQUENCE roles_account_id_seq RESTART");
     }
 
@@ -61,12 +68,16 @@ class AccountServiceUpdateIT extends IntegrationTestBase {
         updateRequest.setId(1L);
         updateRequest.setUsername("newUsername");
         updateRequest.setPassword("newPassword");
+        updateRequest.setFirstname("newFirstname");
+        updateRequest.setLastname("newLastname");
         updateRequest.setRoles(roles);
 
-        AccountDto updatedAccount = accountService.save(updateRequest);
+        EmployeeDto actualResult = accountService.save(updateRequest);
 
-        assertThat(updatedAccount.getId()).isEqualTo(expectedId);
-        assertThat(updatedAccount.getUsername()).isEqualTo("newUsername");
+        assertThat(actualResult.getId()).isEqualTo(expectedId);
+        assertThat(actualResult.getUsername()).isEqualTo("newUsername");
+        assertThat(actualResult.getFirstname()).isEqualTo("newFirstname");
+        assertThat(actualResult.getLastname()).isEqualTo("newLastname");
     }
 
 

@@ -1,4 +1,4 @@
-package ru.borshchevskiy.pcs.dto.project;
+package ru.borshchevskiy.pcs.dto.project.status;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;

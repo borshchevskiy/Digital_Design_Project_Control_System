@@ -53,4 +53,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
     }
 
+    @ExceptionHandler({AuthException.class})
+    public ResponseEntity<String> handleAuthException(AuthException exception) {
+        log.error("Handled AuthException.", exception);
+        return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
+    }
 }

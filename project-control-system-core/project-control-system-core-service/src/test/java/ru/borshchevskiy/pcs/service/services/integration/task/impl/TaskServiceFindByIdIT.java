@@ -11,7 +11,7 @@ import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
-import ru.borshchevskiy.pcs.dto.task.TaskDto;
+import ru.borshchevskiy.pcs.dto.task.status.TaskDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.dto.task.attachment.TaskAttachmentDto;
-import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.entities.task.attachment.TaskAttachment;
 import ru.borshchevskiy.pcs.repository.task.TaskAttachmentRepository;
 import ru.borshchevskiy.pcs.service.mappers.task.attachment.TaskAttachmentMapper;
@@ -46,7 +45,6 @@ public class TaskAttachmentServiceImpl implements TaskAttachmentService {
                 : update(dto);
 
     }
-
 
 
     private TaskAttachmentDto create(TaskAttachmentDto dto) {

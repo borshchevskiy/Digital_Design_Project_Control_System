@@ -1,6 +1,6 @@
 package ru.borshchevskiy.pcs.repository.employee.impl;
 
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.dto.employee.filter.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeFileRepository;
 
@@ -136,9 +136,5 @@ public class EmployeeFileRepositoryImpl implements EmployeeFileRepository {
         }
     }
 
-    @Override
-    public List<Employee> findByFilter(EmployeeFilter filter) {
-        return null;
-    }
 
 }

@@ -22,7 +22,10 @@ import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 import ru.borshchevskiy.pcs.service.mappers.employee.EmployeeMapper;
 import ru.borshchevskiy.pcs.web.controllers.integration.IntegrationTestBase;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,9 +45,9 @@ class EmployeeControllerGetIT extends IntegrationTestBase {
     private final ObjectMapper objectMapper;
     private final JdbcTemplate jdbcTemplate;
     private Account account;
-    EmployeeDto dto1;
-    EmployeeDto dto2;
-    List<EmployeeDto> employees = new ArrayList<>();
+    private EmployeeDto dto1;
+    private EmployeeDto dto2;
+    private final List<EmployeeDto> employees = new ArrayList<>();
 
     @BeforeEach
     void prepare() {

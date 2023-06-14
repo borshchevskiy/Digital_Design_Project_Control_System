@@ -21,6 +21,7 @@ public class TaskAttachmentMapper {
         attachmentDto.setFilename(taskAttachment.getFilename());
         attachmentDto.setPath(taskAttachment.getPath());
         attachmentDto.setSize(taskAttachment.getSize());
+        attachmentDto.setDateUploaded(taskAttachment.getDateUploaded());
         attachmentDto.setTaskId(taskAttachment.getTask().getId());
 
         return attachmentDto;
@@ -45,6 +46,7 @@ public class TaskAttachmentMapper {
         copyTo.setPath(copyFrom.getPath());
         copyTo.setFilename(copyFrom.getFilename());
         copyTo.setSize(copyFrom.getSize());
+        copyTo.setDateUploaded(copyFrom.getDateUploaded());
         copyTo.setTask(getTask(copyFrom.getTaskId()));
 
         return copyTo;

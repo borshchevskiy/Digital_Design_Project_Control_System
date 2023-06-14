@@ -4,8 +4,10 @@ package ru.borshchevskiy.pcs.entities.task;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
@@ -13,9 +15,7 @@ import ru.borshchevskiy.pcs.entities.project.Project;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Entity
@@ -49,9 +49,11 @@ public class Task implements Serializable {
     @JoinColumn(name = "author_id")
     private Employee author;
 
+    @CreationTimestamp
     @Column(name = "date_created")
     private LocalDateTime dateCreated;
 
+    @UpdateTimestamp
     @Column(name = "date_updated")
     private LocalDateTime dateUpdated;
 

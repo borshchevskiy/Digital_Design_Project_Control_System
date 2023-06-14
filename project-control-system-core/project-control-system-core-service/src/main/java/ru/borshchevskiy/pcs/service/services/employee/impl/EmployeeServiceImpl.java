@@ -10,7 +10,7 @@ import ru.borshchevskiy.pcs.common.exceptions.DeletedItemModificationException;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.common.exceptions.RequestDataValidationException;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.dto.employee.filter.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
@@ -122,7 +122,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new RequestDataValidationException("Employee status can't be changed!");
         }
 
-        // Если username из запроса не пуст и отличается от username у изменяемого Employee, то нужно проверить
+        // Если username из запроса не пуст и отличается от username у изменяемого Employee, то нужно проверить,
         // существует ли уже Employee с username из запроса. Если существует, то мы не можем поменять username, т.к.
         // получим 2 Employee с одинаковым username.
         if (dto.getUsername() != null

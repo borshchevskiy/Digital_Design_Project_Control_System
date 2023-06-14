@@ -1,6 +1,5 @@
 package ru.borshchevskiy.pcs.web.controllers.integration;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -22,11 +21,6 @@ public abstract class IntegrationTestBase {
         postgresContainer.start();
         rabbitMQContainer.start();
     }
-
-//    @AfterAll
-//    static void stopContainer() {
-//        postgresContainer.stop();
-//    }
 
     @DynamicPropertySource
     static void postgresProperties(DynamicPropertyRegistry registry) {

@@ -11,11 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.common.enums.Role;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
@@ -23,12 +21,12 @@ import ru.borshchevskiy.pcs.service.mappers.employee.EmployeeMapper;
 import ru.borshchevskiy.pcs.service.services.employee.EmployeeService;
 import ru.borshchevskiy.pcs.web.controllers.integration.IntegrationTestBase;
 
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -78,11 +76,10 @@ class EmployeeControllerCreateIT extends IntegrationTestBase {
         EmployeeDto dto = new EmployeeDto();
         dto.setFirstname("firstname1");
         dto.setLastname("lastname1");
-        dto.setUsername("username");
+
 
         EmployeeDto expectedDto = new EmployeeDto();
         expectedDto.setId(1L);
-        expectedDto.setUsername("username");
         expectedDto.setFirstname("firstname1");
         expectedDto.setLastname("lastname1");
         expectedDto.setStatus(EmployeeStatus.ACTIVE);

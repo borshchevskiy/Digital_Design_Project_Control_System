@@ -1,4 +1,4 @@
-package ru.borshchevskiy.pcs.dto.task;
+package ru.borshchevskiy.pcs.dto.task.filter;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import ru.borshchevskiy.pcs.common.enums.TaskStatus;

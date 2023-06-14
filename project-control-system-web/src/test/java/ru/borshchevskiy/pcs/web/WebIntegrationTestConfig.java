@@ -9,8 +9,6 @@ import ru.borshchevskiy.pcs.entities.EntityConfig;
 import ru.borshchevskiy.pcs.repository.RepositoryConfig;
 import ru.borshchevskiy.pcs.service.RabbitConfig;
 import ru.borshchevskiy.pcs.service.ServiceConfig;
-import ru.borshchevskiy.pcs.service.services.email.EmailService;
-import ru.borshchevskiy.pcs.service.services.email.impl.EmailServiceImpl;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration

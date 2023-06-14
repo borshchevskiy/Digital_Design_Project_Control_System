@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.dto.project.ProjectDto;
-import ru.borshchevskiy.pcs.dto.project.ProjectFilter;
+import ru.borshchevskiy.pcs.dto.project.filter.ProjectFilter;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.repository.project.ProjectRepository;
 import ru.borshchevskiy.pcs.service.services.integration.IntegrationTestBase;

@@ -85,7 +85,6 @@ class TeamMemberServiceSaveUpdateIT extends IntegrationTestBase {
         teamMemberRepository.save(member1);
 
 
-
     }
 
     @AfterEach

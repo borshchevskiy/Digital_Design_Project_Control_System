@@ -1,4 +1,4 @@
-package ru.borshchevskiy.pcs.dto.task.attachment;
+package ru.borshchevskiy.pcs.dto.task.reference;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

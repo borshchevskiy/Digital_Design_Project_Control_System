@@ -81,7 +81,7 @@ class TeamMemberServiceFindAllIT extends IntegrationTestBase {
         member2.setRole(TeamMemberProjectRole.DEVELOPER);
 
         teamMemberRepository.save(member2);
-;
+
     }
 
     @AfterEach

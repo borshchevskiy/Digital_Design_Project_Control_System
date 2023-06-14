@@ -6,14 +6,12 @@ import org.springframework.stereotype.Component;
 import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.common.exceptions.RequestDataValidationException;
-import ru.borshchevskiy.pcs.dto.task.TaskDto;
+import ru.borshchevskiy.pcs.dto.task.status.TaskDto;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.entities.task.Task;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 import ru.borshchevskiy.pcs.repository.project.ProjectRepository;
-
-import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -43,15 +41,13 @@ public class TaskMapper {
         return taskDto;
     }
 
-    public Task createTask(TaskDto dto, LocalDateTime dateCreated) {
+    public Task createTask(TaskDto dto) {
         Task task = new Task();
 
         copyToTask(task, dto);
 
         // Задача должна создаваться в статусе NEW
         task.setStatus(TaskStatus.NEW);
-        // Устанавливаем ранее зафиксированную дату, для которой проведена валидация крайнего срока
-        task.setDateCreated(dateCreated);
 
         return task;
     }
@@ -59,8 +55,6 @@ public class TaskMapper {
     public Task mergeTask(Task task, TaskDto dto) {
 
         copyToTask(task, dto);
-        // Устанавливаем дату изменения
-        task.setDateUpdated(LocalDateTime.now());
 
         return task;
     }

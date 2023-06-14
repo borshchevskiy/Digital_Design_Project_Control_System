@@ -3,7 +3,6 @@ package ru.borshchevskiy.pcs.service.services.task.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +12,9 @@ import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.common.exceptions.RequestDataValidationException;
 import ru.borshchevskiy.pcs.common.exceptions.StatusModificationException;
-import ru.borshchevskiy.pcs.dto.task.TaskDto;
-import ru.borshchevskiy.pcs.dto.task.TaskFilter;
 import ru.borshchevskiy.pcs.dto.task.TaskStatusDto;
+import ru.borshchevskiy.pcs.dto.task.filter.TaskFilter;
+import ru.borshchevskiy.pcs.dto.task.status.TaskDto;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.task.Task;
 import ru.borshchevskiy.pcs.entities.teammember.TeamMember;
@@ -44,19 +43,14 @@ public class TaskServiceImpl implements TaskService {
     private final EmployeeRepository employeeRepository;
     private final TeamMemberRepository teamMemberRepository;
     private final TaskMapper taskMapper;
-    private final ApplicationEventPublisher eventPublisher;
     private final RabbitTemplate rabbitTemplate;
 
     @Override
     @Transactional(readOnly = true)
     public TaskDto findById(Long id) {
-        Task task = repository.findById(id)
+        return repository.findById(id)
+                .map(taskMapper::mapToDto)
                 .orElseThrow(() -> new NotFoundException("Task with id=" + id + " not found!"));
-
-        return taskMapper.mapToDto(task);
-//        return repository.findById(id)
-//                .map(taskMapper::mapToDto)
-//                .orElseThrow(() -> new NotFoundException("Task with id=" + id + " not found!"));
     }
 
     @Override
@@ -146,7 +140,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         // Создаем задачу с датой, для которой выполнена валидация
-        Task task = repository.save(taskMapper.createTask(dto, dateCreated));
+        Task task = repository.save(taskMapper.createTask(dto));
 
         log.debug("Task id=" + task.getId() + " created.");
 
@@ -154,7 +148,6 @@ public class TaskServiceImpl implements TaskService {
 
         return taskMapper.mapToDto(task);
     }
-
 
     private TaskDto update(TaskDto dto) {
         Task task = repository.findById(dto.getId())
@@ -256,8 +249,10 @@ public class TaskServiceImpl implements TaskService {
                                 .filter(t -> !t.getStatus().equals(TaskStatus.CLOSED))
                                 .findFirst()
                                 .ifPresent((t) ->
-                                {throw new StatusModificationException("Task can't be closed because reference " +
-                                                                       "tasks are still not closed");});
+                                {
+                                    throw new StatusModificationException("Task can't be closed because reference " +
+                                                                          "tasks are still not closed");
+                                });
                     }
 
                     task.setStatus(request.getStatus());

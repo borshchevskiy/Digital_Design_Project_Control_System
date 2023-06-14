@@ -276,6 +276,9 @@ databaseChangeLog:
                   name: size
                   type: bigint
               - column:
+                  name: date_uploaded
+                  type: timestamp
+              - column:
                   name: task_id
                   type: bigint
                   constraints:

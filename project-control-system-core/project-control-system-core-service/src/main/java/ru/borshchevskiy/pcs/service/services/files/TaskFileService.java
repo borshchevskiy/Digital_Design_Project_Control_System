@@ -4,7 +4,6 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import ru.borshchevskiy.pcs.dto.task.attachment.TaskAttachmentDto;
 
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.Map;
 
 public interface TaskFileService {
@@ -13,7 +12,7 @@ public interface TaskFileService {
 
     StreamingResponseBody downloadTaskFile(TaskAttachmentDto dto);
 
-   void deleteTaskFile(TaskAttachmentDto dto);
+    void deleteTaskFile(TaskAttachmentDto dto);
 
     Map<String, String> getTaskFileList(Long id);
 }

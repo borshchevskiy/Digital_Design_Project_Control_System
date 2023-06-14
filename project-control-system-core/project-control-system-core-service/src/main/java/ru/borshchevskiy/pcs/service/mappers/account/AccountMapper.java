@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.borshchevskiy.pcs.common.enums.Role;
 import ru.borshchevskiy.pcs.dto.account.AccountDto;
+import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
 
@@ -28,6 +29,16 @@ public class AccountMapper {
         accountDto.setRoles(account.getRoles());
 
         return accountDto;
+    }
+
+    public EmployeeDto mapToEmployeeDto(AccountDto accountDto) {
+        EmployeeDto employeeDto = new EmployeeDto();
+
+        employeeDto.setUsername(accountDto.getUsername());
+        employeeDto.setFirstname(accountDto.getFirstname());
+        employeeDto.setLastname(accountDto.getLastname());
+
+        return employeeDto;
     }
 
     public Account createAccount(AccountDto dto) {

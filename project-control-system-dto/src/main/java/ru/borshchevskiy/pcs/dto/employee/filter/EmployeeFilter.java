@@ -1,4 +1,4 @@
-package ru.borshchevskiy.pcs.dto.employee;
+package ru.borshchevskiy.pcs.dto.employee.filter;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

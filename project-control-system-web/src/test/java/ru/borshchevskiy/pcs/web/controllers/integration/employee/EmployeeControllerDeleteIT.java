@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -47,10 +46,9 @@ class EmployeeControllerDeleteIT extends IntegrationTestBase {
     private final JdbcTemplate jdbcTemplate;
     private Account account1;
     private Account account2;
-    EmployeeDto dto1;
-    EmployeeDto dto2;
-    EmployeeDto dto3;
-    List<EmployeeDto> employees = new ArrayList<>();
+    private EmployeeDto dto1;
+    private EmployeeDto dto2;
+    private final List<EmployeeDto> employees = new ArrayList<>();
 
     @BeforeEach
     void prepare() {
@@ -94,7 +92,6 @@ class EmployeeControllerDeleteIT extends IntegrationTestBase {
 
         dto1 = employeeMapper.mapToDto(save1);
         dto2 = employeeMapper.mapToDto(save2);
-        dto3 = employeeMapper.mapToDto(save3);
 
         employees.add(dto1);
         employees.add(dto2);

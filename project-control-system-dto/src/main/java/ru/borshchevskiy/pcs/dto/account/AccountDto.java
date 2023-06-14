@@ -13,6 +13,10 @@ public class AccountDto {
     private Long id;
     @Schema(description = "Учетная запись")
     private String username;
+    @Schema(description = "Имя")
+    private String Firstname;
+    @Schema(description = "Фамилия")
+    private String Lastname;
     @Schema(description = "Пароль")
     private String password;
     @Schema(description = "Роли")

@@ -11,7 +11,7 @@ import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.common.exceptions.StatusModificationException;
 import ru.borshchevskiy.pcs.dto.project.ProjectDto;
-import ru.borshchevskiy.pcs.dto.project.ProjectStatusDto;
+import ru.borshchevskiy.pcs.dto.project.status.ProjectStatusDto;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.repository.project.ProjectRepository;
 import ru.borshchevskiy.pcs.service.services.integration.IntegrationTestBase;

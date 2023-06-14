@@ -2,7 +2,6 @@ package ru.borshchevskiy.pcs.service.services.files.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +14,10 @@ import ru.borshchevskiy.pcs.entities.task.attachment.TaskAttachment;
 import ru.borshchevskiy.pcs.repository.task.TaskAttachmentRepository;
 import ru.borshchevskiy.pcs.repository.task.TaskRepository;
 import ru.borshchevskiy.pcs.service.services.files.TaskFileService;
-import ru.borshchevskiy.pcs.service.services.task.TaskAttachmentService;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;

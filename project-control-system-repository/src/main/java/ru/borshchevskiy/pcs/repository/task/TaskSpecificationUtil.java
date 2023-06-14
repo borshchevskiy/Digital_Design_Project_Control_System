@@ -5,7 +5,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import ru.borshchevskiy.pcs.dto.task.TaskFilter;
+import ru.borshchevskiy.pcs.dto.task.filter.TaskFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.task.Task;
 
@@ -21,17 +21,26 @@ public class TaskSpecificationUtil {
         Фильтры все не обязательны, как и текстовое поле. Результат должен быть отсортирован
         по дате создания задачи в обратном порядке (сначала свежие задачи).
         */
+        /*
+        Условие фильтра формируется следующим образом:
+        WHERE task.name LIKE filter.name
+        AND task.status = filter.status
+        AND task.implementer.lastname like filter.implementerLastname
+        AND task.author.lastname like filter.authorLastname
+        AND task.deadline <= filter.deadline
+        AND task.dateCreated >= filter.dateCreated
+        */
         return (root, query, criteriaBuilder) -> {
             Predicate taskNameLike = null;
             Predicate attributeFilter = null;
 
-            // Опеределяем предикат taskNameLike (task.name like %%) для поиска по наименованию задачи
+            // Определяем предикат taskNameLike (task.name like %%) для поиска по наименованию задачи
             if (!ObjectUtils.isEmpty(filter.name())) {
                 String nameSearchValue = "%" + filter.name() + "%";
-                taskNameLike = criteriaBuilder.like(root.get("name"), nameSearchValue);
+                taskNameLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), nameSearchValue.toLowerCase());
             }
 
-            // Опеределяем предикат attributeFilter для фильтра по аттрибутам
+            // Определяем предикат attributeFilter для фильтра по аттрибутам
             List<Predicate> attributesPredicates = new ArrayList<>();
 
             if (!ObjectUtils.isEmpty(filter.status())) {
@@ -39,22 +48,24 @@ public class TaskSpecificationUtil {
             }
             if (!ObjectUtils.isEmpty(filter.implementerLastname())) {
                 Join<Task, Employee> implementer = root.join("implementer");
-                attributesPredicates.add(criteriaBuilder.like(implementer.get("lastname"), "%" + filter.implementerLastname() + "%"));
+                attributesPredicates.add(criteriaBuilder.like(criteriaBuilder.lower(implementer.get("lastname")),
+                        "%" + filter.implementerLastname().toLowerCase() + "%"));
             }
             if (!ObjectUtils.isEmpty(filter.authorLastname())) {
                 Join<Task, Employee> author = root.join("author");
-                attributesPredicates.add(criteriaBuilder.like(author.get("lastname"), "%" + filter.authorLastname() + "%"));
+                attributesPredicates.add(criteriaBuilder.like(criteriaBuilder.lower(author.get("lastname")),
+                        "%" + filter.authorLastname().toLowerCase() + "%"));
             }
             if (!ObjectUtils.isEmpty(filter.deadline())) {
-                attributesPredicates.add(criteriaBuilder.lessThan(root.get("deadline"), filter.deadline()));
+                attributesPredicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("deadline"), filter.deadline()));
             }
             if (!ObjectUtils.isEmpty(filter.dateCreated())) {
-                attributesPredicates.add(criteriaBuilder.greaterThan(root.get("dateCreated"), filter.dateCreated()));
+                attributesPredicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("dateCreated"), filter.dateCreated()));
             }
 
 
             if (!CollectionUtils.isEmpty(attributesPredicates)) {
-                attributeFilter = criteriaBuilder.or(attributesPredicates.toArray(Predicate[]::new));
+                attributeFilter = criteriaBuilder.and(attributesPredicates.toArray(Predicate[]::new));
             }
 
 

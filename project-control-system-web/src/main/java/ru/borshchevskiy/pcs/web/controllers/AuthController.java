@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.borshchevskiy.pcs.common.exceptions.AuthException;
 import ru.borshchevskiy.pcs.dto.account.AccountDto;
+import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.dto.login.LoginDto;
 import ru.borshchevskiy.pcs.service.services.account.AccountService;
 
@@ -26,7 +27,7 @@ public class AuthController {
 
     @Operation(summary = "Регистрация", description = "Зарегистрировать нового сотрудника")
     @PostMapping(value = "/register", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public AccountDto register(@RequestBody AccountDto request) {
+    public EmployeeDto register(@RequestBody AccountDto request) {
 
         return accountService.save(request);
     }

@@ -10,8 +10,8 @@ import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.common.exceptions.RequestDataValidationException;
 import ru.borshchevskiy.pcs.common.exceptions.StatusModificationException;
 import ru.borshchevskiy.pcs.dto.project.ProjectDto;
-import ru.borshchevskiy.pcs.dto.project.ProjectFilter;
-import ru.borshchevskiy.pcs.dto.project.ProjectStatusDto;
+import ru.borshchevskiy.pcs.dto.project.filter.ProjectFilter;
+import ru.borshchevskiy.pcs.dto.project.status.ProjectStatusDto;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.repository.project.ProjectRepository;
 import ru.borshchevskiy.pcs.repository.project.ProjectSpecificationUtil;
@@ -87,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = repository.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException("Project with id=" + dto.getId() + " not found!"));
 
-        // Статус обязателен, он не может быть null или изменен при изменени проекта
+        // Статус обязателен, он не может быть null или изменен при изменении проекта
         if (dto.getStatus() != project.getStatus()) {
             throw new RequestDataValidationException("Project status can't be changed! " +
                                                      "Use specific method to change status.");

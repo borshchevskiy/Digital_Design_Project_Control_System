@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
-import ru.borshchevskiy.pcs.dto.task.TaskDto;
+import ru.borshchevskiy.pcs.dto.task.status.TaskDto;
 import ru.borshchevskiy.pcs.service.services.integration.IntegrationTestBase;
 import ru.borshchevskiy.pcs.service.services.task.TaskService;
 

@@ -1,9 +1,8 @@
 package ru.borshchevskiy.pcs.service.services.task;
 
-import org.springframework.transaction.annotation.Transactional;
-import ru.borshchevskiy.pcs.dto.task.TaskDto;
-import ru.borshchevskiy.pcs.dto.task.TaskFilter;
 import ru.borshchevskiy.pcs.dto.task.TaskStatusDto;
+import ru.borshchevskiy.pcs.dto.task.filter.TaskFilter;
+import ru.borshchevskiy.pcs.dto.task.status.TaskDto;
 
 import java.util.List;
 

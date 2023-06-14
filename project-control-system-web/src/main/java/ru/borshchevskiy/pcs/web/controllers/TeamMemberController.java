@@ -35,7 +35,7 @@ public class TeamMemberController {
         return teamMemberService.findAll();
     }
 
-    @Operation(summary = "Создание участика", description = "Создание нового участника")
+    @Operation(summary = "Создание участника", description = "Создание нового участника")
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public TeamMemberDto createTeamMember(@RequestBody TeamMemberDto request) {
 

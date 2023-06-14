@@ -10,14 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.common.enums.TaskStatus;
 import ru.borshchevskiy.pcs.common.enums.TeamMemberProjectRole;
-import ru.borshchevskiy.pcs.dto.task.TaskDto;
+import ru.borshchevskiy.pcs.dto.task.status.TaskDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
@@ -47,7 +46,6 @@ import static org.mockito.Mockito.verify;
 @RabbitListenerTest
 class EmailServiceIT extends IntegrationTestBase {
 
-
     private final TaskService taskService;
     @SpyBean
     private final EmailService emailService;
@@ -62,6 +60,7 @@ class EmailServiceIT extends IntegrationTestBase {
 
     @BeforeEach
     void prepare() {
+
         Account account1 = new Account();
         account1.setUsername("username1");
         account1.setPassword("password1");
@@ -116,8 +115,7 @@ class EmailServiceIT extends IntegrationTestBase {
     @Test
     @WithMockUser(value = "username1", password = "password1")
     @Transactional
-//    @Rollback
-    void createTask() {
+    void createTask() throws InterruptedException {
         final Long id = 1L;
 
         EmailService listener = harness.getSpy("newTask");
@@ -133,10 +131,13 @@ class EmailServiceIT extends IntegrationTestBase {
         createRequest.setAuthorId(1L);
         createRequest.setImplementerId(1L);
 
+
         TaskDto actualResult = taskService.save(createRequest);
 
-        Task savedTask = taskMapper.createTask(actualResult, actualResult.getDateCreated());
+        Task savedTask = taskMapper.createTask(actualResult);
         savedTask.setId(1L);
+
+        Thread.sleep(1100L);
 
         verify(listener).receiveNewTaskMessage(savedTask);
         verify(emailService).sendNewTaskNotification(savedTask);

@@ -49,7 +49,7 @@ public abstract class AbstractFileService implements FileService {
                 Files.delete(filePath);
             } catch (IOException e) {
                 log.error("File " + filePath + " was not deleted.", e);
-                throw new FileDeleteException("File was not deleted.",e);
+                throw new FileDeleteException("File was not deleted.", e);
             }
         } else {
             throw new NotFoundException("File not found");
