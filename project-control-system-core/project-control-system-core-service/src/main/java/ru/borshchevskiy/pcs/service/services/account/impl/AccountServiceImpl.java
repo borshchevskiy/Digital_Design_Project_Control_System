@@ -32,10 +32,10 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
     private final AccountRepository repository;
     private final EmployeeRepository employeeRepository;
     private final AccountMapper accountMapper;
-    private final EmployeeMapper employeeMapper;
     private final EmployeeService employeeService;
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) {
         Account account = repository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User with username: " + username + " not found"));
