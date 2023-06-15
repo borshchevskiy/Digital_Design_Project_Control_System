@@ -86,6 +86,14 @@ public class TaskFileServiceImpl extends AbstractFileService implements TaskFile
         deleteFile(filePath);
     }
 
+    @Override
+    @Transactional
+    public void deleteAllFiles(Task task) {
+        String filePathString = bucket + "/tasks/uploads/project_" + task.getProject().getCode() + "/" + "task_" + task.getId() + "/";
+        Path filePath = Path.of(filePathString);
+        deleteFiles(filePath);
+    }
+
     // Метод возвращает мапу с записями Имя файла:Путь на скачивание файла
     @Override
     @Transactional(readOnly = true)

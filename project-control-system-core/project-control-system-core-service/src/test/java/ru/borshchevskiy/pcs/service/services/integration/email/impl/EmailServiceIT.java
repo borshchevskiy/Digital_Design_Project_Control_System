@@ -4,14 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.test.RabbitListenerTest;
 import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.RabbitMQContainer;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.common.enums.TaskStatus;
@@ -30,21 +36,20 @@ import ru.borshchevskiy.pcs.repository.team.TeamRepository;
 import ru.borshchevskiy.pcs.repository.teammember.TeamMemberRepository;
 import ru.borshchevskiy.pcs.service.mappers.task.TaskMapper;
 import ru.borshchevskiy.pcs.service.services.email.EmailService;
-import ru.borshchevskiy.pcs.service.services.integration.IntegrationTestBase;
 import ru.borshchevskiy.pcs.service.services.task.TaskService;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
-//        (properties = "spring.main.allow-bean-definition-overriding=true")
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
 @RabbitListenerTest
-class EmailServiceIT extends IntegrationTestBase {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+class EmailServiceIT {
 
     private final TaskService taskService;
     @SpyBean
@@ -57,6 +62,34 @@ class EmailServiceIT extends IntegrationTestBase {
     private final ProjectRepository projectRepository;
     private final JdbcTemplate jdbcTemplate;
     private final RabbitListenerTestHarness harness;
+    private final AmqpAdmin amqpAdmin;
+
+    private static final PostgreSQLContainer<?> postgresContainer =
+            new PostgreSQLContainer<>("postgres");
+
+    private static final RabbitMQContainer rabbitMQContainer =
+            new RabbitMQContainer("rabbitmq")
+                    .withExposedPorts(5672);
+
+
+    static {
+        postgresContainer.stop();
+        rabbitMQContainer.stop();
+        postgresContainer.start();
+        rabbitMQContainer.start();
+    }
+
+    @DynamicPropertySource
+    static void postgresProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", postgresContainer::getUsername);
+        registry.add("spring.datasource.password", postgresContainer::getPassword);
+        registry.add("spring.rabbitmq.host", rabbitMQContainer::getHost);
+        registry.add("spring.rabbitmq.username", rabbitMQContainer::getAdminUsername);
+        registry.add("spring.rabbitmq.password", rabbitMQContainer::getAdminPassword);
+        registry.add("spring.rabbitmq.port", () -> rabbitMQContainer.getMappedPort(5672));
+    }
+
 
     @BeforeEach
     void prepare() {
@@ -122,7 +155,7 @@ class EmailServiceIT extends IntegrationTestBase {
         assertNotNull(listener);
 
         TaskDto createRequest = new TaskDto();
-        createRequest.setName("taskName");
+        createRequest.setName("rabbitTask");
         createRequest.setProjectId(1L);
         createRequest.setLaborCosts(100);
         createRequest.setDeadline(LocalDateTime.of(2023, Month.DECEMBER, 31, 0, 0));
@@ -133,14 +166,11 @@ class EmailServiceIT extends IntegrationTestBase {
 
 
         TaskDto actualResult = taskService.save(createRequest);
-
         Task savedTask = taskMapper.createTask(actualResult);
         savedTask.setId(1L);
 
-        Thread.sleep(1100L);
-
-        verify(listener).receiveNewTaskMessage(savedTask);
-        verify(emailService).sendNewTaskNotification(savedTask);
+        verify(listener, timeout(2000)).receiveNewTaskMessage(refEq(savedTask, "dateCreated", "dateUpdated"));
+        verify(emailService, timeout(2000)).sendNewTaskNotification(refEq(savedTask, "dateCreated", "dateUpdated"));
 
     }
 }

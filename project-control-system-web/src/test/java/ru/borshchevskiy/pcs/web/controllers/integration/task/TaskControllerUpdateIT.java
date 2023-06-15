@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -17,7 +18,6 @@ import ru.borshchevskiy.pcs.dto.task.status.TaskDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
-import ru.borshchevskiy.pcs.entities.task.Task;
 import ru.borshchevskiy.pcs.entities.team.Team;
 import ru.borshchevskiy.pcs.entities.teammember.TeamMember;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
@@ -27,6 +27,7 @@ import ru.borshchevskiy.pcs.repository.task.TaskRepository;
 import ru.borshchevskiy.pcs.repository.team.TeamRepository;
 import ru.borshchevskiy.pcs.repository.teammember.TeamMemberRepository;
 import ru.borshchevskiy.pcs.service.mappers.task.TaskMapper;
+import ru.borshchevskiy.pcs.service.services.task.TaskService;
 import ru.borshchevskiy.pcs.web.controllers.integration.IntegrationTestBase;
 
 import java.time.LocalDateTime;
@@ -36,14 +37,14 @@ import java.util.List;
 import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest
 @RequiredArgsConstructor
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-class TaskControllerGetIT extends IntegrationTestBase {
+class TaskControllerUpdateIT extends IntegrationTestBase {
 
 
     private final MockMvc mockMvc;
@@ -54,6 +55,7 @@ class TaskControllerGetIT extends IntegrationTestBase {
     private final TeamRepository teamRepository;
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final TaskService taskService;
     private final ObjectMapper objectMapper;
     private final JdbcTemplate jdbcTemplate;
     private Account account;
@@ -130,32 +132,16 @@ class TaskControllerGetIT extends IntegrationTestBase {
         teamMemberRepository.save(member1);
         teamMemberRepository.save(member2);
 
-        Task task1 = new Task();
-        task1.setName("Task 1");
-        task1.setImplementer(implementer);
-        task1.setLaborCosts(100);
-        task1.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
-        task1.setStatus(TaskStatus.NEW);
-        task1.setAuthor(author);
-        task1.setProject(project1);
+        TaskDto request = new TaskDto();
+        request.setName("Task 1");
+        request.setImplementerId(1L);
+        request.setLaborCosts(100);
+        request.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
+        request.setStatus(TaskStatus.NEW);
+        request.setAuthorId(2L);
+        request.setProjectId(1L);
 
-        Task task2 = new Task();
-        task2.setName("Task 2");
-        task2.setImplementer(implementer);
-        task2.setLaborCosts(200);
-        task2.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
-        task2.setStatus(TaskStatus.NEW);
-        task2.setAuthor(author);
-        task2.setProject(project1);
-
-        Task savedTask1 = taskRepository.save(task1);
-        Task savedTask2 = taskRepository.save(task2);
-
-        dto1 = taskMapper.mapToDto(taskRepository.findById(1L).get());
-        dto2 = taskMapper.mapToDto(taskRepository.findById(2L).get());
-
-        tasks.add(dto1);
-        tasks.add(dto2);
+        taskService.save(request);
     }
 
     @AfterEach
@@ -177,22 +163,92 @@ class TaskControllerGetIT extends IntegrationTestBase {
     }
 
     @Test
-    public void getTasks() throws Exception {
-        mockMvc.perform(get("/api/v1/tasks")
+    @WithMockUser(username = "username", password = "password")
+    public void update() throws Exception {
+
+        TaskDto request = taskService.findById(1L);
+        request.setName("newName");
+
+        mockMvc.perform(put("/api/v1/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                         .with(user(account)))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(tasks)));
+                .andExpect(MockMvcResultMatchers.content()
+                        .json(objectMapper.writeValueAsString(taskService.findById(1L))));
     }
 
     @Test
-    public void getTask() throws Exception {
-        mockMvc.perform(get("/api/v1/tasks/1")
+    @WithMockUser(username = "username", password = "password")
+    public void notFound() throws Exception {
+
+        TaskDto request = taskService.findById(1L);
+        request.setId(Long.MIN_VALUE);
+        request.setName("newName");
+
+        mockMvc.perform(put("/api/v1/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                         .with(user(account)))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(dto1)));
+                .andExpect(status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string("Task with id=" + Long.MIN_VALUE + " not found!"));
     }
 
+    @Test
+    @WithMockUser(username = "username", password = "password")
+    public void tryToChangeStatus() throws Exception {
 
+        TaskDto request = taskService.findById(1L);
+        request.setName("newName");
+        request.setStatus(TaskStatus.CLOSED);
+
+        mockMvc.perform(put("/api/v1/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .with(user(account)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string("Task's status can't be updated! " +
+                                "Use specific request to update status"));
+    }
+
+    @Test
+    @WithMockUser(username = "username", password = "password")
+    public void tryToChangeCreationDate() throws Exception {
+
+        TaskDto request = taskService.findById(1L);
+        request.setName("newName");
+        request.setDateCreated(LocalDateTime.now());
+
+        mockMvc.perform(put("/api/v1/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .with(user(account)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string("Task's creation date can't be changed."));
+    }
+
+    @Test
+    @WithMockUser(username = "username", password = "password")
+    public void deadlineTooEarly() throws Exception {
+
+        TaskDto request = taskService.findById(1L);
+        request.setName("newName");
+        request.setDeadline(LocalDateTime.now());
+
+        mockMvc.perform(put("/api/v1/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .with(user(account)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string("Deadline is too early!"));
+    }
 }

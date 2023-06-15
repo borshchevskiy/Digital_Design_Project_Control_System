@@ -34,7 +34,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -133,7 +132,7 @@ class TaskControllerGetByFilterIT extends IntegrationTestBase {
         task1.setName("Task 1");
         task1.setImplementer(implementer);
         task1.setLaborCosts(100);
-        task1.setDeadline(LocalDateTime.of(2023, 12, 31,0,0));
+        task1.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
         task1.setStatus(TaskStatus.NEW);
         task1.setAuthor(author);
         task1.setProject(project1);
@@ -142,7 +141,7 @@ class TaskControllerGetByFilterIT extends IntegrationTestBase {
         task2.setName("Task 2");
         task2.setImplementer(implementer);
         task2.setLaborCosts(200);
-        task2.setDeadline(LocalDateTime.of(2023, 12, 31,0,0));
+        task2.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
         task2.setStatus(TaskStatus.NEW);
         task2.setAuthor(author);
         task2.setProject(project1);
@@ -182,8 +181,8 @@ class TaskControllerGetByFilterIT extends IntegrationTestBase {
                 TaskStatus.NEW,
                 "implementer",
                 "author",
-                LocalDateTime.of(2023,12,31,0,0),
-                LocalDateTime.of(2023,1,1,0,0));
+                LocalDateTime.of(2023, 12, 31, 0, 0),
+                LocalDateTime.of(2023, 1, 1, 0, 0));
 
         mockMvc.perform(post("/api/v1/tasks/filter")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -202,8 +201,8 @@ class TaskControllerGetByFilterIT extends IntegrationTestBase {
                 TaskStatus.NEW,
                 "implementer",
                 "author",
-                LocalDateTime.of(2023,12,31,0,0),
-                LocalDateTime.of(2023,1,1,0,0));
+                LocalDateTime.of(2023, 12, 31, 0, 0),
+                LocalDateTime.of(2023, 1, 1, 0, 0));
 
         mockMvc.perform(post("/api/v1/tasks/filter")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -222,8 +221,8 @@ class TaskControllerGetByFilterIT extends IntegrationTestBase {
                 TaskStatus.CLOSED,
                 "implementer",
                 "author",
-                LocalDateTime.of(2023,12,31,0,0),
-                LocalDateTime.of(2023,1,1,0,0));
+                LocalDateTime.of(2023, 12, 31, 0, 0),
+                LocalDateTime.of(2023, 1, 1, 0, 0));
 
         mockMvc.perform(post("/api/v1/tasks/filter")
                         .contentType(MediaType.APPLICATION_JSON)

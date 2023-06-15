@@ -8,6 +8,9 @@ import ru.borshchevskiy.pcs.entities.task.Task;
 import ru.borshchevskiy.pcs.entities.task.attachment.TaskAttachment;
 import ru.borshchevskiy.pcs.repository.task.TaskRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Component
 @RequiredArgsConstructor
 public class TaskAttachmentMapper {
@@ -21,7 +24,7 @@ public class TaskAttachmentMapper {
         attachmentDto.setFilename(taskAttachment.getFilename());
         attachmentDto.setPath(taskAttachment.getPath());
         attachmentDto.setSize(taskAttachment.getSize());
-        attachmentDto.setDateUploaded(taskAttachment.getDateUploaded());
+        attachmentDto.setDateUploaded(LocalDateTime.parse(taskAttachment.getDateUploaded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))));
         attachmentDto.setTaskId(taskAttachment.getTask().getId());
 
         return attachmentDto;

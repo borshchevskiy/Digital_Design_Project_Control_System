@@ -13,13 +13,16 @@ import ru.borshchevskiy.pcs.entities.task.Task;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 import ru.borshchevskiy.pcs.repository.project.ProjectRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Component
 @RequiredArgsConstructor
 public class TaskMapper {
 
     private final EmployeeRepository employeeRepository;
     private final ProjectRepository projectRepository;
-
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     public TaskDto mapToDto(Task task) {
         TaskDto taskDto = new TaskDto();
@@ -31,11 +34,13 @@ public class TaskMapper {
                 ? null
                 : task.getImplementer().getId());
         taskDto.setLaborCosts(task.getLaborCosts());
-        taskDto.setDeadline(task.getDeadline());
+        taskDto.setDeadline(LocalDateTime.parse(task.getDeadline().format(formatter)));
         taskDto.setStatus(task.getStatus());
         taskDto.setAuthorId(task.getAuthor().getId());
-        taskDto.setDateCreated(task.getDateCreated());
-        taskDto.setDateUpdated(task.getDateUpdated());
+        taskDto.setDateCreated(LocalDateTime.parse(task.getDateCreated().format(formatter)));
+        taskDto.setDateUpdated(task.getDateUpdated() == null
+                ? null
+                : LocalDateTime.parse(task.getDateUpdated().format(formatter)));
         taskDto.setProjectId(task.getProject().getId());
 
         return taskDto;

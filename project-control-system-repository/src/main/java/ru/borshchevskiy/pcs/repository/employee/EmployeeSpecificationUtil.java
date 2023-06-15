@@ -41,7 +41,7 @@ public class EmployeeSpecificationUtil {
             if (!ObjectUtils.isEmpty(filter.value())) {
                 // Предикат условия поиска по атрибутам
                 String searchValue = "%" + filter.value() + "%";
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("firstname")) , searchValue.toLowerCase()));
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("firstname")), searchValue.toLowerCase()));
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("lastname")), searchValue.toLowerCase()));
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("patronymic")), searchValue.toLowerCase()));
 

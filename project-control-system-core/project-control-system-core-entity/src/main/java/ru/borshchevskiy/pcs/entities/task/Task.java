@@ -79,4 +79,5 @@ public class Task implements Serializable {
         referencesTo.remove(task);
         task.getReferencedBy().remove(this);
     }
+
 }

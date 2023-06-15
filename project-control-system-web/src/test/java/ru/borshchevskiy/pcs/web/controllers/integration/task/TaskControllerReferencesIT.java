@@ -9,15 +9,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.borshchevskiy.pcs.common.enums.*;
+import ru.borshchevskiy.pcs.dto.task.reference.TaskReferenceDto;
 import ru.borshchevskiy.pcs.dto.task.status.TaskDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
-import ru.borshchevskiy.pcs.entities.task.Task;
 import ru.borshchevskiy.pcs.entities.team.Team;
 import ru.borshchevskiy.pcs.entities.teammember.TeamMember;
 import ru.borshchevskiy.pcs.repository.account.AccountRepository;
@@ -27,23 +28,22 @@ import ru.borshchevskiy.pcs.repository.task.TaskRepository;
 import ru.borshchevskiy.pcs.repository.team.TeamRepository;
 import ru.borshchevskiy.pcs.repository.teammember.TeamMemberRepository;
 import ru.borshchevskiy.pcs.service.mappers.task.TaskMapper;
+import ru.borshchevskiy.pcs.service.services.task.TaskService;
 import ru.borshchevskiy.pcs.web.controllers.integration.IntegrationTestBase;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest
 @RequiredArgsConstructor
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-class TaskControllerGetIT extends IntegrationTestBase {
+class TaskControllerReferencesIT extends IntegrationTestBase {
 
 
     private final MockMvc mockMvc;
@@ -54,6 +54,7 @@ class TaskControllerGetIT extends IntegrationTestBase {
     private final TeamRepository teamRepository;
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final TaskService taskService;
     private final ObjectMapper objectMapper;
     private final JdbcTemplate jdbcTemplate;
     private Account account;
@@ -130,32 +131,37 @@ class TaskControllerGetIT extends IntegrationTestBase {
         teamMemberRepository.save(member1);
         teamMemberRepository.save(member2);
 
-        Task task1 = new Task();
-        task1.setName("Task 1");
-        task1.setImplementer(implementer);
-        task1.setLaborCosts(100);
-        task1.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
-        task1.setStatus(TaskStatus.NEW);
-        task1.setAuthor(author);
-        task1.setProject(project1);
+        TaskDto request = new TaskDto();
+        request.setName("Task 1");
+        request.setImplementerId(1L);
+        request.setLaborCosts(100);
+        request.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
+        request.setStatus(TaskStatus.NEW);
+        request.setAuthorId(2L);
+        request.setProjectId(1L);
 
-        Task task2 = new Task();
-        task2.setName("Task 2");
-        task2.setImplementer(implementer);
-        task2.setLaborCosts(200);
-        task2.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
-        task2.setStatus(TaskStatus.NEW);
-        task2.setAuthor(author);
-        task2.setProject(project1);
+        TaskDto request2 = new TaskDto();
+        request2.setName("Task 2");
+        request2.setImplementerId(1L);
+        request2.setLaborCosts(200);
+        request2.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
+        request2.setStatus(TaskStatus.NEW);
+        request2.setAuthorId(2L);
+        request2.setProjectId(1L);
 
-        Task savedTask1 = taskRepository.save(task1);
-        Task savedTask2 = taskRepository.save(task2);
+        TaskDto request3 = new TaskDto();
+        request3.setName("Task 2");
+        request3.setImplementerId(1L);
+        request3.setLaborCosts(200);
+        request3.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
+        request3.setStatus(TaskStatus.NEW);
+        request3.setAuthorId(2L);
+        request3.setProjectId(1L);
 
-        dto1 = taskMapper.mapToDto(taskRepository.findById(1L).get());
-        dto2 = taskMapper.mapToDto(taskRepository.findById(2L).get());
+        taskService.save(request);
+        taskService.save(request2);
+        taskService.save(request3);
 
-        tasks.add(dto1);
-        tasks.add(dto2);
     }
 
     @AfterEach
@@ -176,23 +182,78 @@ class TaskControllerGetIT extends IntegrationTestBase {
         jdbcTemplate.execute("ALTER SEQUENCE tasks_id_seq RESTART");
     }
 
+
     @Test
-    public void getTasks() throws Exception {
-        mockMvc.perform(get("/api/v1/tasks")
+
+    @WithMockUser(username = "username", password = "password")
+    public void addReference() throws Exception {
+
+        TaskReferenceDto request = new TaskReferenceDto(List.of(2L));
+
+
+        mockMvc.perform(post("/api/v1/tasks/1/references/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                         .with(user(account)))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(tasks)));
+                .andExpect(MockMvcResultMatchers.content()
+                        .json(objectMapper.writeValueAsString(List.of(taskService.findById(2L)))));
     }
 
     @Test
-    public void getTask() throws Exception {
-        mockMvc.perform(get("/api/v1/tasks/1")
+
+    @WithMockUser(username = "username", password = "password")
+    public void removeReference() throws Exception {
+
+        TaskReferenceDto request = new TaskReferenceDto(List.of(2L));
+
+        // Добавляем связи и убеждаемся что они применились
+        mockMvc.perform(post("/api/v1/tasks/1/references/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                         .with(user(account)))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(dto1)));
+                .andExpect(MockMvcResultMatchers.content()
+                        .json(objectMapper.writeValueAsString(List.of(taskService.findById(2L)))));
+
+        // Удаляем связь
+        mockMvc.perform(post("/api/v1/tasks/1/references/remove")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .with(user(account)))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.content()
+                        .json(objectMapper.writeValueAsString(Collections.EMPTY_LIST)));
     }
 
+    @Test
 
+    @WithMockUser(username = "username", password = "password")
+    public void getReferences() throws Exception {
+
+        TaskReferenceDto request = new TaskReferenceDto(List.of(2L, 3L));
+
+        // Добавляем связи и убеждаемся что они применились
+        mockMvc.perform(post("/api/v1/tasks/1/references/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .with(user(account)))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.content()
+                        .json(objectMapper.writeValueAsString(List.of(taskService.findById(2L),
+                                taskService.findById(3L)))));
+
+        // Получаем список связей
+        mockMvc.perform(get("/api/v1/tasks/1/references")
+                        .with(user(account)))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.content()
+                        .json(objectMapper.writeValueAsString(List.of(taskService.findById(2L),
+                                taskService.findById(3L)))));
+    }
 }

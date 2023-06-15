@@ -12,4 +12,6 @@ public interface FileService {
     Path uploadFile(Path filePath, InputStream content);
 
     void deleteFile(Path filePath);
+
+    void deleteFiles(Path filePath);
 }

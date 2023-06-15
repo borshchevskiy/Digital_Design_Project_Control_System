@@ -24,10 +24,12 @@ import ru.borshchevskiy.pcs.repository.task.TaskRepository;
 import ru.borshchevskiy.pcs.repository.task.TaskSpecificationUtil;
 import ru.borshchevskiy.pcs.repository.teammember.TeamMemberRepository;
 import ru.borshchevskiy.pcs.service.mappers.task.TaskMapper;
+import ru.borshchevskiy.pcs.service.services.files.TaskFileService;
 import ru.borshchevskiy.pcs.service.services.task.TaskService;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,7 @@ public class TaskServiceImpl implements TaskService {
     private final TeamMemberRepository teamMemberRepository;
     private final TaskMapper taskMapper;
     private final RabbitTemplate rabbitTemplate;
+    private final TaskFileService taskFileService;
 
     @Override
     @Transactional(readOnly = true)
@@ -139,7 +142,7 @@ public class TaskServiceImpl implements TaskService {
             throw new RequestDataValidationException("Deadline is too early!");
         }
 
-        // Создаем задачу с датой, для которой выполнена валидация
+        // Создаем задачу
         Task task = repository.save(taskMapper.createTask(dto));
 
         log.debug("Task id=" + task.getId() + " created.");
@@ -160,7 +163,8 @@ public class TaskServiceImpl implements TaskService {
         }
 
         // Проверяем что не меняется дата создания
-        if (dto.getDateCreated() == null || !dto.getDateCreated().isEqual(task.getDateCreated())) {
+        if (dto.getDateCreated() == null
+            || !dto.getDateCreated().isEqual(LocalDateTime.parse(task.getDateCreated().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))))) {
             throw new RequestDataValidationException("Task's creation date can't be changed.");
         }
 
@@ -212,7 +216,7 @@ public class TaskServiceImpl implements TaskService {
                 }).orElseThrow(() -> new NotFoundException("Task with id=" + id + " not found!"));
 
         log.debug("Task id=" + task.getId() + " deleted.");
-
+        taskFileService.deleteAllFiles(task);
         return taskMapper.mapToDto(task);
 
     }

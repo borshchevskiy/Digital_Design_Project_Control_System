@@ -2,6 +2,7 @@ package ru.borshchevskiy.pcs.service.services.files.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.borshchevskiy.pcs.common.exceptions.FileDeleteException;
 import ru.borshchevskiy.pcs.common.exceptions.FileUploadException;
@@ -54,6 +55,15 @@ public abstract class AbstractFileService implements FileService {
         } else {
             throw new NotFoundException("File not found");
         }
+    }
 
+    @Override
+    public void deleteFiles(Path filePath) {
+        try {
+            FileSystemUtils.deleteRecursively(filePath);
+        } catch (IOException e) {
+            log.error("File " + filePath + " was not deleted.", e);
+            throw new FileDeleteException("File was not deleted.", e);
+        }
     }
 }

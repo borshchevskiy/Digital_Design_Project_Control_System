@@ -9,10 +9,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.common.enums.*;
+import ru.borshchevskiy.pcs.dto.task.TaskStatusDto;
 import ru.borshchevskiy.pcs.dto.task.status.TaskDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
@@ -27,6 +31,7 @@ import ru.borshchevskiy.pcs.repository.task.TaskRepository;
 import ru.borshchevskiy.pcs.repository.team.TeamRepository;
 import ru.borshchevskiy.pcs.repository.teammember.TeamMemberRepository;
 import ru.borshchevskiy.pcs.service.mappers.task.TaskMapper;
+import ru.borshchevskiy.pcs.service.services.task.TaskService;
 import ru.borshchevskiy.pcs.web.controllers.integration.IntegrationTestBase;
 
 import java.time.LocalDateTime;
@@ -36,14 +41,14 @@ import java.util.List;
 import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest
 @RequiredArgsConstructor
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-class TaskControllerGetIT extends IntegrationTestBase {
+class TaskControllerUpdateStatusIT extends IntegrationTestBase {
 
 
     private final MockMvc mockMvc;
@@ -54,6 +59,7 @@ class TaskControllerGetIT extends IntegrationTestBase {
     private final TeamRepository teamRepository;
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final TaskService taskService;
     private final ObjectMapper objectMapper;
     private final JdbcTemplate jdbcTemplate;
     private Account account;
@@ -63,6 +69,20 @@ class TaskControllerGetIT extends IntegrationTestBase {
 
     @BeforeEach
     void prepare() {
+        jdbcTemplate.execute("TRUNCATE TABLE test.public.employees CASCADE ");
+        jdbcTemplate.execute("TRUNCATE TABLE test.public.accounts CASCADE ");
+        jdbcTemplate.execute("TRUNCATE TABLE test.public.roles CASCADE ");
+        jdbcTemplate.execute("TRUNCATE TABLE test.public.projects CASCADE ");
+        jdbcTemplate.execute("TRUNCATE TABLE test.public.teams CASCADE ");
+        jdbcTemplate.execute("TRUNCATE TABLE test.public.team_members CASCADE ");
+        jdbcTemplate.execute("TRUNCATE TABLE test.public.tasks CASCADE ");
+        jdbcTemplate.execute("ALTER SEQUENCE employees_id_seq RESTART");
+        jdbcTemplate.execute("ALTER SEQUENCE accounts_id_seq RESTART");
+        jdbcTemplate.execute("ALTER SEQUENCE roles_account_id_seq RESTART");
+        jdbcTemplate.execute("ALTER SEQUENCE projects_id_seq RESTART");
+        jdbcTemplate.execute("ALTER SEQUENCE teams_id_seq RESTART");
+        jdbcTemplate.execute("ALTER SEQUENCE team_members_id_seq RESTART");
+        jdbcTemplate.execute("ALTER SEQUENCE tasks_id_seq RESTART");
 
         account = new Account();
         Set<Role> roles = new HashSet<>();
@@ -130,32 +150,17 @@ class TaskControllerGetIT extends IntegrationTestBase {
         teamMemberRepository.save(member1);
         teamMemberRepository.save(member2);
 
-        Task task1 = new Task();
-        task1.setName("Task 1");
-        task1.setImplementer(implementer);
-        task1.setLaborCosts(100);
-        task1.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
-        task1.setStatus(TaskStatus.NEW);
-        task1.setAuthor(author);
-        task1.setProject(project1);
+        TaskDto request = new TaskDto();
+        request.setName("Task 1");
+        request.setImplementerId(1L);
+        request.setLaborCosts(100);
+        request.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
+        request.setStatus(TaskStatus.NEW);
+        request.setAuthorId(2L);
+        request.setProjectId(1L);
 
-        Task task2 = new Task();
-        task2.setName("Task 2");
-        task2.setImplementer(implementer);
-        task2.setLaborCosts(200);
-        task2.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
-        task2.setStatus(TaskStatus.NEW);
-        task2.setAuthor(author);
-        task2.setProject(project1);
+        taskService.save(request);
 
-        Task savedTask1 = taskRepository.save(task1);
-        Task savedTask2 = taskRepository.save(task2);
-
-        dto1 = taskMapper.mapToDto(taskRepository.findById(1L).get());
-        dto2 = taskMapper.mapToDto(taskRepository.findById(2L).get());
-
-        tasks.add(dto1);
-        tasks.add(dto2);
     }
 
     @AfterEach
@@ -177,22 +182,96 @@ class TaskControllerGetIT extends IntegrationTestBase {
     }
 
     @Test
-    public void getTasks() throws Exception {
-        mockMvc.perform(get("/api/v1/tasks")
+    @WithMockUser(username = "username", password = "password")
+    public void updateStatus() throws Exception {
+
+        TaskStatusDto request = new TaskStatusDto();
+        request.setStatus(TaskStatus.IN_WORK);
+
+        mockMvc.perform(post("/api/v1/tasks/1/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                         .with(user(account)))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(tasks)));
+                .andExpect(MockMvcResultMatchers.content()
+                        .json(objectMapper.writeValueAsString(taskService.findById(1L))));
     }
 
     @Test
-    public void getTask() throws Exception {
-        mockMvc.perform(get("/api/v1/tasks/1")
+    @WithMockUser(username = "username", password = "password")
+    public void tryToUpdateFinalStatus() throws Exception {
+
+        Task closedTask = new Task();
+        closedTask.setName("name");
+        closedTask.setLaborCosts(100);
+        closedTask.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
+        closedTask.setStatus(TaskStatus.CLOSED);
+
+        taskRepository.save(closedTask);
+
+
+        TaskStatusDto request = new TaskStatusDto();
+        request.setStatus(TaskStatus.IN_WORK);
+
+        mockMvc.perform(post("/api/v1/tasks/2/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                         .with(user(account)))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(dto1)));
+                .andExpect(status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string("Current status " + closedTask.getStatus() +
+                                " cannot be changed, because it is the final status"));
     }
 
+    @Test
+    @WithMockUser(username = "username", password = "password")
+    public void tryToChangeNotByChain() throws Exception {
 
+        TaskStatusDto request = new TaskStatusDto();
+        request.setStatus(TaskStatus.DONE);
+
+        mockMvc.perform(post("/api/v1/tasks/1/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .with(user(account)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string("Current status " + TaskStatus.NEW +
+                                " can only be changed to " +
+                                TaskStatus.IN_WORK));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @WithMockUser(username = "username", password = "password")
+    public void tryToUpdateStatusWithReferences() throws Exception {
+
+        // Сохраняем новую таску, которая ссылается на первую таску
+        Task doneTask = new Task();
+        doneTask.setName("name");
+        doneTask.setLaborCosts(100);
+        doneTask.setDeadline(LocalDateTime.of(2023, 12, 31, 0, 0));
+        doneTask.setStatus(TaskStatus.DONE);
+        doneTask.addReference(taskRepository.findById(1L).get());
+
+        taskRepository.save(doneTask);
+
+
+        TaskStatusDto request = new TaskStatusDto();
+        request.setStatus(TaskStatus.CLOSED);
+
+        mockMvc.perform(post("/api/v1/tasks/2/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .with(user(account)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.content()
+                        .string("Task can't be closed because reference " +
+                                "tasks are still not closed"));
+    }
 }

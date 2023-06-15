@@ -43,8 +43,6 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
-
-
   - changeSet:
       id: 3
       author: iborschevskiy
@@ -221,7 +219,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: deadline
-                  type: timestamp
+                  type: timestamp(0)
                   constraints:
                     nullable: false
               - column:
@@ -238,12 +236,12 @@ databaseChangeLog:
                     referencedColumnNames: id
               - column:
                   name: date_created
-                  type: timestamp
+                  type: timestamp(0)
                   constraints:
                     nullable: false
               - column:
                   name: date_updated
-                  type: timestamp
+                  type: timestamp(0)
               - column:
                   name: project_id
                   type: bigint
@@ -277,7 +275,7 @@ databaseChangeLog:
                   type: bigint
               - column:
                   name: date_uploaded
-                  type: timestamp
+                  type: timestamp(0)
               - column:
                   name: task_id
                   type: bigint
