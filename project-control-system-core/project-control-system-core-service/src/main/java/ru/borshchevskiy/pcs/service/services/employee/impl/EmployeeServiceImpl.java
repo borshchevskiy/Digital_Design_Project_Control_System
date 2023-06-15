@@ -10,14 +10,17 @@ import ru.borshchevskiy.pcs.common.exceptions.DeletedItemModificationException;
 import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.common.exceptions.RequestDataValidationException;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.dto.employee.filter.EmployeeFilter;
+import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
+import ru.borshchevskiy.pcs.repository.account.AccountRepository;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeSpecificationUtil;
 import ru.borshchevskiy.pcs.service.mappers.employee.EmployeeMapper;
 import ru.borshchevskiy.pcs.service.services.employee.EmployeeService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,6 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository repository;
     private final EmployeeMapper employeeMapper;
+    private final AccountRepository accountRepository;
 
 
     @Override
@@ -80,6 +84,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeDto create(EmployeeDto dto) {
 
+        // Проверяем, если в dto указана учетная запись, то проверяем, существует ли она.
+        // Если такой учетной записи нет отправляем Exception
+        if (dto.getUsername() != null && accountRepository.findByUsername(dto.getUsername()).isEmpty()) {
+            throw new NotFoundException("Account with specified username not found.");
+        }
+
         // Проверяем есть ли уже Employee для этой учетной записи
         // Если есть и он ACTIVE, бросаем Exception
         Employee employeeByUsername = repository.findByUsername(dto.getUsername()).orElse(null);
@@ -107,15 +117,18 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new DeletedItemModificationException("Can't modify deleted objects!");
         }
 
-        // Статус обязателен и не может быть null или изменен при изменени сотрудника
+        // Статус обязателен и не может быть null или изменен при изменении сотрудника
         if (dto.getStatus() != employee.getStatus()) {
-            throw new RequestDataValidationException("Employee status can't be null!");
+            throw new RequestDataValidationException("Employee status can't be changed!");
         }
 
-        // Если username из запроса не пуст и отличается от username у изменяемого Employee, то нужно проверить
-        // существует ли уже Employee для username из запроса. Если существует, то мы не можем поменять username, т.к.
+        // Если username из запроса не пуст и отличается от username у изменяемого Employee, то нужно проверить,
+        // существует ли уже Employee с username из запроса. Если существует, то мы не можем поменять username, т.к.
         // получим 2 Employee с одинаковым username.
-        if (dto.getUsername() != null && !dto.getUsername().equals(employee.getAccount().getUsername())) {
+        if (dto.getUsername() != null
+            && !dto.getUsername().equals(Optional.ofNullable(employee.getAccount())
+                .map(Account::getUsername)
+                .orElse(null))) {
 
             // Ищем Employee по username, если нашелся, бросаем исключение
             if (repository.findByUsername(dto.getUsername()).isPresent()) {
@@ -131,7 +144,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.mapToDto(repository.save(employee));
     }
 
-    // При удалении только меняется статус на DELETED
+    // При удалении только меняется статус на DELETED, запись из БД не удаляется
     @Override
     @Transactional
     public EmployeeDto deleteById(Long id) {

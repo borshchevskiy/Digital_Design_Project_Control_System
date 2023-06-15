@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 import ru.borshchevskiy.pcs.common.enums.TaskStatus;
-import ru.borshchevskiy.pcs.dto.task.TaskFilter;
+import ru.borshchevskiy.pcs.dto.task.filter.TaskFilter;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
@@ -222,14 +222,14 @@ public class TaskJdbcRepositoryImpl implements TaskJdbcRepository {
             parameters.add(filter.status().name());
         }
 
-        if (filter.implementerName() != null) {
+        if (filter.implementerLastname() != null) {
             whereSql.add("ei.lastname LIKE ?");
-            parameters.add("%" + filter.implementerName() + "%");
+            parameters.add("%" + filter.implementerLastname() + "%");
         }
 
-        if (filter.authorName() != null) {
+        if (filter.authorLastname() != null) {
             whereSql.add("ea.lastname LIKE ?");
-            parameters.add("%" + filter.authorName() + "%");
+            parameters.add("%" + filter.authorLastname() + "%");
         }
 
         if (filter.deadline() != null) {
@@ -280,15 +280,6 @@ public class TaskJdbcRepositoryImpl implements TaskJdbcRepository {
         implementer.setStatus(EmployeeStatus.valueOf(resultSet.getString("implementer_status").toUpperCase()));
 
         Employee author = employeeJdbcRepository.findById(resultSet.getLong("author_id")).orElse(null);
-//        Employee author = new Employee();
-//        author.setId(resultSet.getLong("author_id"));
-//        author.setFirstname(resultSet.getString("author_firstname"));
-//        author.setLastname(resultSet.getString("author_lastname"));
-//        author.setPatronymic(resultSet.getString("author_patronymic"));
-//        author.setPosition(resultSet.getString("author_position"));
-//        author.setAccount(resultSet.getString("author_account"));
-//        author.setEmail(resultSet.getString("author_email"));
-//        author.setStatus(EmployeeStatus.valueOf(resultSet.getString("author_status").toUpperCase()));
 
         Project project = new Project();
         project.setId(resultSet.getLong("project_id"));

@@ -1,2 +1,0 @@
-2023-05-30 22:28:19.727 [ WARN] DESKTOP-I94FBGC --- [nio-8080-exec-2] r.b.p.s.s.e.i.EmployeeServiceImpl        : Attempt to delete already deleted Employee with id=8
-2023-05-30 22:32:17.734 [ WARN] DESKTOP-I94FBGC --- [nio-8080-exec-6] r.b.p.s.s.e.i.EmployeeServiceImpl        : Attempt to delete already deleted Employee with id=8

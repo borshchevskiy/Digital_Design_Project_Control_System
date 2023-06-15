@@ -1,8 +1,8 @@
 package ru.borshchevskiy.pcs.service.services.project;
 
 import ru.borshchevskiy.pcs.dto.project.ProjectDto;
-import ru.borshchevskiy.pcs.dto.project.ProjectFilter;
-import ru.borshchevskiy.pcs.dto.project.ProjectStatusDto;
+import ru.borshchevskiy.pcs.dto.project.filter.ProjectFilter;
+import ru.borshchevskiy.pcs.dto.project.status.ProjectStatusDto;
 
 import java.util.List;
 

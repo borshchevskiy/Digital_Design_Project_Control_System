@@ -2,7 +2,7 @@ package ru.borshchevskiy.pcs.service.services.integration.employee.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,7 +30,7 @@ class EmployeeServiceFindAllIT extends IntegrationTestBase {
     private final JdbcTemplate jdbcTemplate;
 
 
-    @BeforeAll
+    @BeforeEach
     public void prepare() {
         Employee employee1 = new Employee();
         employee1.setFirstname("testFirstName1");

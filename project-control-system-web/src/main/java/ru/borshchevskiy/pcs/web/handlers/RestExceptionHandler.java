@@ -1,5 +1,7 @@
 package ru.borshchevskiy.pcs.web.handlers;
 
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,7 +13,9 @@ import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestControllerAdvice(basePackages = "ru.borshchevskiy.pcs.web.controllers")
+@RequiredArgsConstructor
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
 
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<String> handleNotFoundException(NotFoundException exception) {
@@ -43,4 +47,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
     }
 
+    @ExceptionHandler({FileDeleteException.class})
+    public ResponseEntity<String> handleFileDeleteException(FileDeleteException exception) {
+        log.error("Handled FileDeleteException.", exception);
+        return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler({AuthException.class})
+    public ResponseEntity<String> handleAuthException(AuthException exception) {
+        log.error("Handled AuthException.", exception);
+        return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
+    }
 }

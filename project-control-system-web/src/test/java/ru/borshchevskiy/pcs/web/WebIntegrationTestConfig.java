@@ -13,7 +13,11 @@ import ru.borshchevskiy.pcs.service.ServiceConfig;
 @SpringBootConfiguration
 @EnableAutoConfiguration
 @PropertySource("classpath:application-test.properties")
-@Import({ServiceConfig.class, RepositoryConfig.class, EntityConfig.class, PasswordEncoderConfig.class, RabbitConfig.class})
+@Import({ServiceConfig.class,
+        RepositoryConfig.class,
+        EntityConfig.class,
+        PasswordEncoderConfig.class,
+        RabbitConfig.class})
 public class WebIntegrationTestConfig extends WebConfig {
 
 }

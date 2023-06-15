@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.dto.employee.filter.EmployeeFilter;
 import ru.borshchevskiy.pcs.service.services.employee.EmployeeService;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @Operation(summary = "Получение сотрудника", description = "Получение сотруника по id")
+    @Operation(summary = "Получение сотрудника", description = "Получение сотрудника по id")
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
     public EmployeeDto getEmployee(@PathVariable Long id) {
 
@@ -31,21 +31,21 @@ public class EmployeeController {
         return employeeService.findById(id);
     }
 
-    @Operation(summary = "Получение сотрудников", description = "Получение всех сотруников")
+    @Operation(summary = "Получение сотрудников", description = "Получение всех сотрудников")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public List<EmployeeDto> getAll() {
 
         return employeeService.findAll();
     }
 
-    @Operation(summary = "Поиск сотрудника по учетной записи", description = "Найти сотруника по точному соответствию учетной записи")
+    @Operation(summary = "Поиск сотрудника по учетной записи", description = "Найти сотрудника по точному соответствию учетной записи")
     @GetMapping(value = "/usernames/{username}", produces = APPLICATION_JSON_VALUE)
     public EmployeeDto getByUsername(@PathVariable String username) {
 
         return employeeService.findByUsername(username);
     }
 
-    @Operation(summary = "Поиск сотрудника по фильтру", description = "Найти сотруника по текстовому значению по полям " +
+    @Operation(summary = "Поиск сотрудника по фильтру", description = "Найти сотрудника по текстовому значению по полям " +
                                                                       "Фамилия, Имя, Отчество, учетной записи, " +
                                                                       "адресу электронной почты " +
                                                                       "и только среди активных сотрудников.")
@@ -63,7 +63,7 @@ public class EmployeeController {
     }
 
 
-    @Operation(summary = "Изменение сотрудника", description = "Изменение сотруника по id")
+    @Operation(summary = "Изменение сотрудника", description = "Изменение сотрудника по id")
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public EmployeeDto updateEmployee(@RequestBody EmployeeDto request) {
 
@@ -71,7 +71,7 @@ public class EmployeeController {
     }
 
 
-    @Operation(summary = "Удаление сотрудника", description = "Изменение по id статуса сотруника на DELETED")
+    @Operation(summary = "Удаление сотрудника", description = "Изменение по id статуса сотрудника на DELETED")
     @DeleteMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
     public EmployeeDto deleteEmployee(@PathVariable Long id) {
 

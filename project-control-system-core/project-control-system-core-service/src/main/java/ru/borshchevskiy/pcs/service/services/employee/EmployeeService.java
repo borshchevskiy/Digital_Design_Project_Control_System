@@ -1,7 +1,7 @@
 package ru.borshchevskiy.pcs.service.services.employee;
 
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.dto.employee.filter.EmployeeFilter;
 
 import java.util.List;
 

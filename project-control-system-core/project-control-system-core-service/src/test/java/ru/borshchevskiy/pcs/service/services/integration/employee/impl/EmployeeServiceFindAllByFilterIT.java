@@ -1,16 +1,15 @@
 package ru.borshchevskiy.pcs.service.services.integration.employee.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import ru.borshchevskiy.pcs.dto.employee.filter.EmployeeFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.repository.employee.EmployeeRepository;
 import ru.borshchevskiy.pcs.service.services.employee.EmployeeService;
@@ -24,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EmployeeServiceFindAllByFilterIT extends IntegrationTestBase {
 
 
@@ -33,7 +31,7 @@ class EmployeeServiceFindAllByFilterIT extends IntegrationTestBase {
     private final JdbcTemplate jdbcTemplate;
 
 
-    @BeforeAll
+    @BeforeEach
     void prepare() {
         Employee employee1 = new Employee();
         employee1.setFirstname("testFirstName1");
@@ -49,7 +47,7 @@ class EmployeeServiceFindAllByFilterIT extends IntegrationTestBase {
         employeeRepository.save(employee2);
     }
 
-    @AfterAll
+    @AfterEach
     void clean() {
         jdbcTemplate.execute("TRUNCATE TABLE test.public.employees CASCADE ");
         jdbcTemplate.execute("ALTER SEQUENCE employees_id_seq RESTART");

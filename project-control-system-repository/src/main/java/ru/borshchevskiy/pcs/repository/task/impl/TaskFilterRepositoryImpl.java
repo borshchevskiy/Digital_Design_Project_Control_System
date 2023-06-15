@@ -3,7 +3,7 @@ package ru.borshchevskiy.pcs.repository.task.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
-import ru.borshchevskiy.pcs.dto.task.TaskFilter;
+import ru.borshchevskiy.pcs.dto.task.filter.TaskFilter;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.task.Task;
 import ru.borshchevskiy.pcs.repository.task.TaskFilterRepository;
@@ -31,25 +31,25 @@ public class TaskFilterRepositoryImpl implements TaskFilterRepository {
         Predicate taskNameLike = null;
         Predicate attributeFilter = null;
 
-        // Опеределяем предикат taskNameLike (task.name like %%) для поиска по наименованию задачи
+        // Определяем предикат taskNameLike (task.name like %%) для поиска по наименованию задачи
         if (filter.name() != null) {
             String nameSearchValue = "%" + filter.name() + "%";
             taskNameLike = criteriaBuilder.like(task.get("name"), nameSearchValue);
         }
 
-        // Опеределяем предикат attributeFilter для фильтра по аттрибутам
+        // Определяем предикат attributeFilter для фильтра по аттрибутам
         List<Predicate> attributesPredicates = new ArrayList<>();
 
         if (filter.status() != null) {
             attributesPredicates.add(criteriaBuilder.equal(task.get("status").as(String.class), filter.status().name()));
         }
-        if (filter.implementerName() != null) {
+        if (filter.implementerLastname() != null) {
             Join<Task, Employee> implementer = task.join("implementer");
-            attributesPredicates.add(criteriaBuilder.like(implementer.get("lastname"), "%" + filter.implementerName() + "%"));
+            attributesPredicates.add(criteriaBuilder.like(implementer.get("lastname"), "%" + filter.implementerLastname() + "%"));
         }
-        if (filter.authorName() != null) {
+        if (filter.authorLastname() != null) {
             Join<Task, Employee> author = task.join("author");
-            attributesPredicates.add(criteriaBuilder.like(author.get("lastname"), "%" + filter.authorName() + "%"));
+            attributesPredicates.add(criteriaBuilder.like(author.get("lastname"), "%" + filter.authorLastname() + "%"));
         }
         if (filter.deadline() != null) {
             attributesPredicates.add(criteriaBuilder.lessThan(task.get("deadline"), filter.deadline()));

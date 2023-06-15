@@ -2,6 +2,7 @@ package ru.borshchevskiy.pcs.service.services.integration.employee.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
@@ -18,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @RequiredArgsConstructor
 class EmployeeServiceFindAllEmptyIT extends IntegrationTestBase {
 
-
-    private final EmployeeService employeeService;
+    @Autowired
+    private EmployeeService employeeService;
 
     @Test
     void findEmptyList() {

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableRabbit
 public class RabbitConfig {
 
-    private String NEW_TASK_ROUTING_KEY = "app.task.new.#";
+    private final String NEW_TASK_ROUTING_KEY = "app.task.new.#";
 
     @Bean
     public Queue newTaskQueue() {

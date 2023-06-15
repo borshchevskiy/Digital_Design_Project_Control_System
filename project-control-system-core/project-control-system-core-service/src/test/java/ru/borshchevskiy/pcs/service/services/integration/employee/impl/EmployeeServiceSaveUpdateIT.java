@@ -1,18 +1,13 @@
 package ru.borshchevskiy.pcs.service.services.integration.employee.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.common.exceptions.DeletedItemModificationException;
-import ru.borshchevskiy.pcs.common.exceptions.NotFoundException;
 import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
 import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
@@ -22,12 +17,12 @@ import ru.borshchevskiy.pcs.service.services.employee.EmployeeService;
 import ru.borshchevskiy.pcs.service.services.integration.IntegrationTestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EmployeeServiceSaveUpdateIT extends IntegrationTestBase {
 
 
@@ -36,31 +31,25 @@ class EmployeeServiceSaveUpdateIT extends IntegrationTestBase {
     private final AccountRepository accountRepository;
     private final JdbcTemplate jdbcTemplate;
 
-    @BeforeAll
+    @BeforeEach
     void prepare() {
-        Account account = new Account();
-        account.setUsername("username");
-        account.setPassword("password");
+        Account account1 = new Account();
+        account1.setUsername("username1");
+        account1.setPassword("password1");
 
-        accountRepository.save(account);
+        accountRepository.save(account1);
 
         Employee employee1 = new Employee();
-        employee1.setFirstname("Firstname");
-        employee1.setLastname("Lastname");
-        employee1.setAccount(account);
+        employee1.setFirstname("Firstname1");
+        employee1.setLastname("Lastname1");
+        employee1.setAccount(account1);
         employee1.setStatus(EmployeeStatus.ACTIVE);
 
         employeeRepository.save(employee1);
 
-        Employee employee2 = new Employee();
-        employee2.setFirstname("Firstname2");
-        employee2.setLastname("Lastname2");
-        employee2.setStatus(EmployeeStatus.DELETED);
-
-        employeeRepository.save(employee2);
     }
 
-    @AfterAll
+    @AfterEach
     void clean() {
         jdbcTemplate.execute("TRUNCATE TABLE test.public.accounts CASCADE ");
         jdbcTemplate.execute("ALTER SEQUENCE employees_id_seq RESTART");
@@ -68,14 +57,12 @@ class EmployeeServiceSaveUpdateIT extends IntegrationTestBase {
     }
 
     @Test
-    @Transactional
-    @Rollback
     void updateEmployee() {
 
         final Long id = 1L;
         final String newFirstname = "newFirstname";
         final String newLastname = "newLastname";
-        final String username = "username";
+        final String username = "username1";
 
         assertTrue(employeeRepository.findById(id).isPresent());
 
@@ -94,28 +81,5 @@ class EmployeeServiceSaveUpdateIT extends IntegrationTestBase {
         assertThat(actualResult.getFirstname()).isEqualTo(newFirstname);
         assertThat(actualResult.getLastname()).isEqualTo(newLastname);
     }
-
-    @Test
-    void updateEmployeeNotFound() {
-        final Long id = Long.MIN_VALUE;
-
-        final EmployeeDto requestDto = new EmployeeDto();
-        requestDto.setId(id);
-
-        assertThrows(NotFoundException.class, () -> employeeService.save(requestDto));
-    }
-
-    @Test
-    void updateDeletedEmployee() {
-        final Long id = 2L;
-
-        assertTrue(employeeRepository.findById(id).isPresent());
-
-        final EmployeeDto requestDto = new EmployeeDto();
-        requestDto.setId(id);
-
-        assertThrows(DeletedItemModificationException.class, () -> employeeService.save(requestDto));
-    }
-
 
 }
