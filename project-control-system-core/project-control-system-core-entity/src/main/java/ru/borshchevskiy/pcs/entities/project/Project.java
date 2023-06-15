@@ -1,29 +1,32 @@
 package ru.borshchevskiy.pcs.entities.project;
 
 
-import lombok.*;
-import ru.borshchevskiy.pcs.entities.task.Task;
-import ru.borshchevskiy.pcs.entities.team.Team;
-import ru.borshchevskiy.pcs.enums.ProjectStatus;
+import jakarta.persistence.*;
+import lombok.Data;
+import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
 
-import java.util.List;
-import java.util.Objects;
+import java.io.Serializable;
 
 @Data
-public class Project {
+@Entity
+@Table(name = "projects")
+public class Project implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "code")
     private String code;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private ProjectStatus status;
-
-    private List<Team> teams;
-
-    private List<Task> tasks;
 
 }

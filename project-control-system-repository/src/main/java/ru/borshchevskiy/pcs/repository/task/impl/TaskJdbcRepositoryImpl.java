@@ -1,29 +1,32 @@
 package ru.borshchevskiy.pcs.repository.task.impl;
 
-import ru.borshchevskiy.pcs.dto.task.TaskFilter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+import ru.borshchevskiy.pcs.common.enums.EmployeeStatus;
+import ru.borshchevskiy.pcs.common.enums.ProjectStatus;
+import ru.borshchevskiy.pcs.common.enums.TaskStatus;
+import ru.borshchevskiy.pcs.dto.task.filter.TaskFilter;
+import ru.borshchevskiy.pcs.entities.account.Account;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 import ru.borshchevskiy.pcs.entities.project.Project;
 import ru.borshchevskiy.pcs.entities.task.Task;
-import ru.borshchevskiy.pcs.enums.EmployeeStatus;
-import ru.borshchevskiy.pcs.enums.ProjectStatus;
-import ru.borshchevskiy.pcs.enums.TaskStatus;
 import ru.borshchevskiy.pcs.repository.employee.impl.EmployeeJdbcRepositoryImpl;
-import ru.borshchevskiy.pcs.repository.task.TaskRepository;
+import ru.borshchevskiy.pcs.repository.task.TaskJdbcRepository;
 import ru.borshchevskiy.pcs.repository.util.jdbc.ConnectionManager;
 
 import java.sql.*;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
 
-public class TaskJdbcRepositoryImpl implements TaskRepository {
+@Repository
+@RequiredArgsConstructor
+public class TaskJdbcRepositoryImpl implements TaskJdbcRepository {
 
-    EmployeeJdbcRepositoryImpl employeeJdbcRepository = new EmployeeJdbcRepositoryImpl();
+    EmployeeJdbcRepositoryImpl employeeJdbcRepository;
 
     private static final String FIND_ALL_SQL = """
             SELECT tasks.id,
@@ -102,7 +105,7 @@ public class TaskJdbcRepositoryImpl implements TaskRepository {
             preparedStatement.setString(1, task.getName());
             preparedStatement.setString(2, task.getDescription());
             preparedStatement.setLong(3, task.getImplementer().getId());
-            preparedStatement.setLong(4, task.getLaborCosts().toMillis());
+            preparedStatement.setInt(4, task.getLaborCosts());
             preparedStatement.setTimestamp(5, Timestamp.valueOf(task.getDeadline()));
             preparedStatement.setString(6, task.getStatus().name());
             preparedStatement.setLong(7, task.getAuthor().getId());
@@ -133,7 +136,7 @@ public class TaskJdbcRepositoryImpl implements TaskRepository {
             preparedStatement.setString(1, task.getName());
             preparedStatement.setString(2, task.getDescription());
             preparedStatement.setLong(3, task.getImplementer().getId());
-            preparedStatement.setLong(4, task.getLaborCosts().toMillis());
+            preparedStatement.setInt(4, task.getLaborCosts());
             preparedStatement.setTimestamp(5, Timestamp.valueOf(task.getDeadline()));
             preparedStatement.setString(6, task.getStatus().name());
             preparedStatement.setLong(7, task.getAuthor().getId());
@@ -272,20 +275,11 @@ public class TaskJdbcRepositoryImpl implements TaskRepository {
         implementer.setLastname(resultSet.getString("implementer_lastname"));
         implementer.setPatronymic(resultSet.getString("implementer_patronymic"));
         implementer.setPosition(resultSet.getString("implementer_position"));
-        implementer.setAccount(resultSet.getString("implementer_account"));
+        implementer.setAccount((Account) resultSet.getObject("implementer_account"));
         implementer.setEmail(resultSet.getString("implementer_email"));
         implementer.setStatus(EmployeeStatus.valueOf(resultSet.getString("implementer_status").toUpperCase()));
 
-        Employee author = employeeJdbcRepository.getById(resultSet.getLong("author_id")).orElse(null);
-//        Employee author = new Employee();
-//        author.setId(resultSet.getLong("author_id"));
-//        author.setFirstname(resultSet.getString("author_firstname"));
-//        author.setLastname(resultSet.getString("author_lastname"));
-//        author.setPatronymic(resultSet.getString("author_patronymic"));
-//        author.setPosition(resultSet.getString("author_position"));
-//        author.setAccount(resultSet.getString("author_account"));
-//        author.setEmail(resultSet.getString("author_email"));
-//        author.setStatus(EmployeeStatus.valueOf(resultSet.getString("author_status").toUpperCase()));
+        Employee author = employeeJdbcRepository.findById(resultSet.getLong("author_id")).orElse(null);
 
         Project project = new Project();
         project.setId(resultSet.getLong("project_id"));
@@ -304,7 +298,7 @@ public class TaskJdbcRepositoryImpl implements TaskRepository {
         task.setName(resultSet.getString("name"));
         task.setDescription(resultSet.getString("description"));
         task.setImplementer(implementer);
-        task.setLaborCosts(Duration.of(resultSet.getLong("labor_costs"), ChronoUnit.HOURS));
+        task.setLaborCosts(resultSet.getInt("labor_costs"));
         task.setDeadline(resultSet.getTimestamp("deadline").toLocalDateTime());
         task.setStatus(TaskStatus.valueOf(resultSet.getString("status").toUpperCase()));
         task.setAuthor(author);

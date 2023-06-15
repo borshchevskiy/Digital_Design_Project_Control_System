@@ -1,0 +1,307 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: account_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: roles
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 3
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: employees
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: firstname
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastname
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: patronymic
+                  type: varchar(255)
+              - column:
+                  name: position
+                  type: varchar(255)
+              - column:
+                  name: account_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_employee_account
+                    referencedTableName: accounts
+                    referencedColumnNames: id
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 4
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: projects
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: code
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 5
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: teams
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: project_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: team_project_fk
+                    deleteCascade: true
+                    referencedTableName: projects
+                    referencedColumnNames: id
+
+  - changeSet:
+      id: 6
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: team_members
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: team_id
+                  type: bigint
+                  constraints:
+                    deleteCascade: true
+                    foreignKeyName: team_member_team_fk
+                    referencedTableName: teams
+                    referencedColumnNames: id
+              - column:
+                  name: employee_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: team_member_employee_fk
+                    referencedTableName: employees
+                    referencedColumnNames: id
+              - column:
+                  name: project_role
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 7
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: implementer_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: task_implementer_fk
+                    referencedTableName: employees
+                    referencedColumnNames: id
+              - column:
+                  name: labor_costs
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deadline
+                  type: timestamp(0)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: task_author_fk
+                    referencedTableName: employees
+                    referencedColumnNames: id
+              - column:
+                  name: date_created
+                  type: timestamp(0)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date_updated
+                  type: timestamp(0)
+              - column:
+                  name: project_id
+                  type: bigint
+                  constraints:
+                    deleteCascade: true
+                    foreignKeyName: task_project_fk
+                    referencedTableName: projects
+                    referencedColumnNames: id
+  - changeSet:
+      id: 8
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: task_attachments
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: path
+                  type: varchar(255)
+              - column:
+                  name: filename
+                  type: varchar(255)
+              - column:
+                  name: size
+                  type: bigint
+              - column:
+                  name: date_uploaded
+                  type: timestamp(0)
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    deleteCascade: true
+                    foreignKeyName: fk_task_attachment_task
+                    referencedTableName: tasks
+                    referencedColumnNames: id
+  - changeSet:
+      id: 9
+      author: iborschevskiy
+      changes:
+        - createTable:
+            tableName: tasks_references_to
+            columns:
+              - column:
+                  name: referenced_by_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: referenced_by_id
+                    referencedTableName: tasks
+                    referencedColumnNames: id
+              - column:
+                  name: references_to_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: references_to_id
+                    referencedTableName: tasks
+                    referencedColumnNames: id

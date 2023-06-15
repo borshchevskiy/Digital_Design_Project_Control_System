@@ -1,23 +1,17 @@
 package ru.borshchevskiy.pcs.repository.employee;
 
-import ru.borshchevskiy.pcs.dto.employee.EmployeeDto;
-import ru.borshchevskiy.pcs.dto.employee.EmployeeFilter;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.borshchevskiy.pcs.entities.employee.Employee;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface EmployeeRepository {
 
-    Employee create(Employee employee);
+public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
 
-    Employee update(Employee employee);
+    @Query("SELECT e FROM Employee e JOIN FETCH e.account a WHERE a.username = :username")
+    Optional<Employee> findByUsername(@Param("username") String username);
 
-    Optional<Employee> getById(long id);
-
-    List<Employee> getAll();
-
-    void deleteById(Long id);
-
-    List<Employee> findByFilter(EmployeeFilter filter);
 }
