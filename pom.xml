@@ -31,6 +31,14 @@
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.plugin>18</maven.compiler.plugin>
         <maven.compiler.target>18</maven.compiler.target>
+
+        <!--Dependencies' version-->
+        <openapi.version>2.0.0</openapi.version>
+        <mockito.inline.version>5.2.0</mockito.inline.version>
+        <testcontaineres.postgresql.version>1.18.0</testcontaineres.postgresql.version>
+        <testcontaineres.rabbitmq.version>1.18.0</testcontaineres.rabbitmq.version>
+        <testcontaineres.junit.version>1.18.0</testcontaineres.junit.version>
+        <lombok.version>1.18.26</lombok.version>
     </properties>
 
 
@@ -66,7 +74,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.0.0</version>
+            <version>${openapi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -115,25 +123,25 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>5.2.0</version>
+            <version>${mockito.inline.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.18.0</version>
+            <version>${testcontaineres.postgresql.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>rabbitmq</artifactId>
-            <version>1.18.0</version>
+            <version>${testcontaineres.rabbitmq.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.18.0</version>
+            <version>${testcontaineres.junit.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -141,7 +149,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
 
